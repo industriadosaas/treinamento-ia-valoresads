@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101722">
+<title>Cifras ao Vivo — Leitura limpa</title>
+<style>
+:root{color-scheme:dark;--bg:#0c131d;--panel:#172331;--panel2:#243345;--border:#3b4b60;--text:#f7fafc;--muted:#b3c3d4;--accent:#80e4bb;--gold:#ffd684;--red:#ffaca8}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}body{overflow-x:hidden}button,select,textarea,input{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}a{color:var(--accent)}.wrap{max-width:1640px;margin:auto;padding:15px 18px 25px}.top{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap}.top h1{font-size:clamp(23px,3vw,36px);letter-spacing:-.035em;margin:0}.sub{color:var(--muted);font-size:13px;margin:5px 0 0}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--border);background:var(--panel2);color:var(--text);border-radius:11px;padding:9px 12px;font-size:13px;font-weight:760}.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);color:#06281e;border-color:var(--accent)}.btn.flat{background:transparent}.btn.tiny{padding:7px 10px}.settings{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0;padding:10px 13px;border-radius:13px;background:#152130;border:1px solid var(--border);font-size:13px}.settings label{display:inline-flex;gap:7px;align-items:center}.settings .check{accent-color:var(--accent);width:17px;height:17px}select{border:1px solid var(--border);background:#26374a;color:var(--text);padding:8px 9px;border-radius:8px;font-weight:700;max-width:100%}.legend{font-size:12px;color:var(--muted);margin:11px 0 14px;line-height:1.5}.legend strong{color:var(--text)}.songs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.song{min-width:0;border-radius:17px;border:1px solid var(--border);background:var(--panel);padding:14px}.song.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px #80e4bb50}.songhead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.song h2{font-size:clamp(18px,1.7vw,23px);line-height:1.14;letter-spacing:-.02em;margin:0}.artist{font-size:12px;color:var(--muted);margin-top:4px}.keybox{text-align:center;flex:none;border:1px solid #736244;background:#352d25;color:var(--gold);border-radius:10px;padding:4px 9px;font-size:12px}.keybox strong{display:block;font-size:23px;line-height:1.1}.transpose{display:flex;gap:6px;align-items:center;margin:12px 0 7px}.transpose .btn{padding:6px 10px;min-width:34px;font-size:18px}.transpose select{flex:1;min-width:0}.tip{font-size:11px;color:var(--muted);min-height:18px;margin:5px 0 9px}.songactions{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}.songactions .btn{font-size:12px;padding:7px 9px}.section{border:1px solid #334153;background:#101924;padding:8px;margin-top:8px;border-radius:11px}.section.active{border-color:var(--accent);background:#183631}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:8px}.sectionname{color:#c5d2df;font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}.repeat{color:var(--gold);font-size:11px}.chords{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.chord{min-width:39px;border-radius:8px;border:1px solid #44556c;background:#26394e;color:#fff;font-weight:900;font-size:16px;line-height:1;padding:8px;text-align:center}.chord:focus-visible,.chord:hover{border-color:var(--accent)}.chord.current{color:#082519;background:var(--accent);border-color:var(--accent)}.chord small{display:block;color:inherit;opacity:.72;font-size:9px;font-weight:650;margin-top:3px}.note{color:var(--muted);font-size:11px;margin-top:6px}.section-lyrics{white-space:pre-line;border-top:1px solid #3a4b5e;margin-top:7px;padding-top:7px;font-size:13px;color:#e2e9f2;line-height:1.45;max-height:160px;overflow:auto}.footer{font-size:12px;color:var(--muted);margin:15px 0;line-height:1.5}.notice{color:#ffdca7}.hidden{display:none!important}.compact .section{padding:6px;margin-top:6px}.compact .chord{padding:6px;font-size:14px}.compact .chords{margin-top:5px}
+#stage{position:fixed;inset:0;z-index:100;background:#09111b;display:none;flex-direction:column;padding:clamp(10px,1.7vw,23px);gap:8px}#stage.show{display:flex}.stagebar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.stagetitle{font-size:clamp(19px,2.4vw,31px);font-weight:900;letter-spacing:-.03em}.stagemeta{font-size:12px;color:var(--muted)}.stagecontrols{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.stagecontrols .btn{padding:7px 9px}.stagecontrols select{padding:7px;font-size:12px}.stagecontrols label{display:inline-flex;gap:4px;align-items:center;font-size:12px;color:var(--muted)}.stage-center{display:grid;grid-template-columns:1.55fr 1fr;gap:9px;flex:1;min-height:115px}.bigbox{border-radius:17px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;overflow:hidden;padding:6px;position:relative}.bigbox.current{border:2px solid var(--accent);background:#15382f}.bigbox.next{border:1px solid var(--border);background:#1c2a3b}.over{font-size:clamp(12px,1.6vw,20px);text-transform:uppercase;letter-spacing:.12em;color:#a8c5c0;font-weight:900}.giant{font-size:clamp(74px,15vw,220px);line-height:1.1;letter-spacing:-.065em;color:#b5ffe0;font-weight:970;text-align:center;white-space:nowrap}.giant.small{font-size:clamp(55px,10.5vw,145px);color:#fff}.underchord{font-size:clamp(11px,1.5vw,17px);font-weight:740;color:#c8d9e2;text-align:center}.seclabel{font-size:clamp(12px,1.5vw,18px);color:#cce5dc;font-weight:700;text-align:center;padding:0 6px}.upcoming{display:flex;align-items:center;gap:7px;justify-content:center;flex-wrap:wrap;min-height:30px}.pill{padding:5px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:9px;font-size:clamp(16px,2vw,25px);font-weight:800}.stage-lyrics{background:#121d2b;border:1px solid #3b4c5b;border-radius:13px;padding:10px 14px;min-height:0;max-height:26vh;overflow:auto;flex:none}.lyrics-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--gold);font-size:11px;letter-spacing:.08em;font-weight:850;text-transform:uppercase;margin-bottom:5px}.lyrics-body{color:#f5f6fd;font-size:clamp(17px,2.1vw,27px);line-height:1.38;font-weight:670;white-space:pre-line}.lyrics-empty{color:var(--muted);font-size:13px}.stage-bottom{display:grid;grid-template-columns:1fr 2fr 1fr;gap:9px;min-height:65px}.bigbtn{background:#29394c;border-radius:14px;border:1px solid var(--border);color:white;font-size:clamp(17px,2.5vw,30px);font-weight:850;padding:10px 8px}.bigbtn.primary{background:var(--accent);color:#073021;border-color:var(--accent)}.hint{font-size:11px;color:var(--muted);text-align:center}
+.modal-backdrop{position:fixed;inset:0;background:#000c;z-index:220;display:none;align-items:center;justify-content:center;padding:14px}.modal-backdrop.show{display:flex}.modal{background:#182637;border:1px solid #52667c;border-radius:17px;padding:17px;box-shadow:0 25px 70px #000a;max-height:min(92vh,900px);overflow:auto;width:min(95vw,670px)}.modal h3{margin:0 0 7px;font-size:22px}.modal-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.modal-desc{font-size:13px;line-height:1.45;color:var(--muted);margin:7px 0 12px}.modal-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.diagram-container{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}.diagram-container svg{width:min(100%,270px);height:auto}.diagram-notes{max-width:250px;line-height:1.5;font-size:14px}.modal textarea{display:block;resize:vertical;width:100%;background:#0c1725;color:#fff;border:1px solid var(--border);border-radius:10px;padding:11px;line-height:1.45;min-height:150px;font-size:14px}.lyric-grid{display:grid;grid-template-columns:200px 1fr;gap:10px;align-items:start}.section-select{width:100%;padding:9px}.lyric-tools{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0}.muted{color:var(--muted)}.toast{position:fixed;z-index:350;bottom:15px;left:50%;transform:translateX(-50%);background:#f4f2df;color:#15212a;border-radius:12px;padding:11px 16px;display:none;font-size:13px;font-weight:750;max-width:min(92vw,600px);text-align:center;box-shadow:0 10px 30px #0009}.toast.show{display:block}
+@media(max-width:950px){.songs{grid-template-columns:1fr}.song{padding:12px}.song h2{font-size:21px}.tip{min-height:0}.stagecontrols .btn,.stagecontrols select{font-size:12px}.stage-center{grid-template-columns:1.2fr .9fr}}
+@media(max-width:570px){.wrap{padding:12px 9px}.settings{gap:8px;padding:8px}.stagebar{gap:6px}.stagetitle{font-size:18px}.stagecontrols{gap:4px}.stagecontrols .btn{font-size:12px;padding:6px}.stagecontrols select{max-width:97px;padding:6px}.stage-center{grid-template-columns:1fr;grid-template-rows:1.1fr .75fr;gap:6px}.bigbox{border-radius:12px}.giant{font-size:clamp(73px,22vw,125px)}.giant.small{font-size:clamp(46px,16vw,90px)}.over{font-size:12px}.stage-lyrics{max-height:24vh;padding:8px}.lyrics-body{font-size:17px}.stage-bottom{grid-template-columns:1fr 1.6fr 1fr;gap:5px;min-height:55px}.bigbtn{font-size:16px;border-radius:11px;padding:8px 4px}.hint{font-size:10px}.lyric-grid{grid-template-columns:1fr}.diagram-container{gap:2px}}
+@media(max-height:640px){.stage-lyrics{max-height:19vh}.stage-bottom{min-height:48px}.giant{font-size:clamp(53px,13vh,115px)}.giant.small{font-size:clamp(39px,10vh,82px)}.bigbtn{font-size:16px;padding:5px}}
+@media print{.actions,.settings,.legend,.songactions,.transpose,#stage,.modal-backdrop,.toast{display:none!important}.songs{grid-template-columns:repeat(3,1fr)}.wrap{padding:0}.song,.section{background:white;color:black}.chord{background:white;color:black;border:1px solid #888}.sectionname,.artist,.tip{color:#555}}
+/* Folha da música — sem avançar acordes */
+#full-sheet{position:fixed;inset:0;z-index:108;display:none;overflow:auto;overscroll-behavior:contain;background:#0b1420;color:#f6fbff;padding:14px max(12px,calc((100vw - 1380px)/2));}
+#full-sheet.show{display:block}.sheet-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;position:sticky;top:-14px;z-index:2;background:#101c2b;border-bottom:1px solid #415268;padding:10px 12px;border-radius:12px;margin-bottom:10px}
+.sheet-toolbar strong{font-size:clamp(19px,2.5vw,27px)}.sheet-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.sheet-controls label{display:inline-flex;gap:5px;align-items:center;color:#d6e5ef;font-size:13px;font-weight:650}.sheet-controls select{background:#26394a;color:#fff;border:1px solid #526478;border-radius:9px;padding:8px 9px;min-width:74px;font-size:14px}
+.sheet-heading{padding:8px 8px 13px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px solid #38495e}.sheet-heading h2{font-size:clamp(24px,3vw,34px);margin:0;letter-spacing:-.025em}.sheet-heading p{margin:4px 0 0;color:#b9ccde;font-size:13px}.sheet-tonality{color:#a5ffe0;font-weight:950;font-size:29px}
+.sheet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch;margin:11px 0}.sheet-section{border:1px solid #415268;border-radius:11px;background:#182739;padding:10px 12px;min-width:0}.sheet-section.active{border-color:#80e4bb}.sheet-section-head{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-bottom:7px}.sheet-section-head strong{color:#ffe29d;font-size:clamp(14px,1.4vw,18px);line-height:1.2}.sheet-section-head .meta{font-size:12px;color:#b9cce0;font-weight:700}.sheet-inline-chords{display:flex;flex-wrap:wrap;gap:7px;align-items:center}.sheet-chord{background:#283d4c;border:1px solid #4e6577;border-radius:8px;color:#b7ffdf;font-weight:950;font-size:clamp(18px,2vw,28px);padding:6px 10px;min-width:48px;line-height:1.12}.sheet-chord:focus-visible{outline:3px solid #ffe29d}.sheet-chord small{display:block;font-size:10px;color:#d1e4ec;font-weight:600}.sheet-lyric{white-space:pre-wrap;margin-top:10px;color:#f5f5fb;line-height:1.35;font-weight:600;font-size:clamp(15px,1.4vw,19px);padding:10px;background:#0d1b2a;border-radius:9px}.sheet-lyric-empty{margin-top:8px;color:#a7baca;font-size:12px;font-weight:500}.sheet-foot{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#bbcbda;font-size:12px;margin:0 4px 12px}.sheet-foot a{color:#b0efce}
+#full-sheet.fit .sheet-grid{gap:7px;margin-top:8px}#full-sheet.fit .sheet-section{padding:7px 9px}#full-sheet.fit .sheet-section-head{margin-bottom:5px}#full-sheet.fit .sheet-section-head strong{font-size:clamp(13px,1.2vw,16px)}#full-sheet.fit .sheet-inline-chords{gap:5px}#full-sheet.fit .sheet-chord{font-size:clamp(17px,1.6vw,23px);padding:4px 7px;min-width:38px}#full-sheet.fit .sheet-lyric{font-size:14px;line-height:1.2;padding:6px}
+@media(min-width:1320px){#full-sheet.fit .sheet-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:780px){#full-sheet{padding:8px}#full-sheet .sheet-grid{grid-template-columns:1fr}.sheet-toolbar{top:-8px;padding:9px}.sheet-controls{width:100%}.sheet-controls select{min-width:65px}.sheet-heading h2{font-size:24px}.sheet-heading{padding-bottom:8px}.sheet-chord{font-size:24px}}
+@media(max-width:460px){.sheet-controls .btn{padding:7px;font-size:12px}.sheet-controls label{font-size:12px}.sheet-controls select{padding:7px 5px}.sheet-chord{font-size:22px}.sheet-toolbar strong{font-size:19px}}
+@page{size:A4 landscape;margin:7mm}
+@media print{body.print-sheet{background:white!important;color:black!important}body.print-sheet #overview,body.print-sheet #stage,body.print-sheet .modal-backdrop,body.print-sheet .toast{display:none!important}body.print-sheet #full-sheet{display:block!important;position:static!important;overflow:visible!important;inset:auto!important;background:white!important;color:black!important;padding:0!important}body.print-sheet .sheet-toolbar,body.print-sheet .sheet-foot,body.print-sheet .sheet-section-head button{display:none!important}body.print-sheet .sheet-heading{border-bottom:1px solid #777;color:black;padding:0 0 5px}body.print-sheet .sheet-heading h2{font-size:21px}body.print-sheet .sheet-heading p{color:#444;font-size:10px}body.print-sheet .sheet-tonality{color:black;font-size:19px}body.print-sheet .sheet-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}body.print-sheet .sheet-section{break-inside:avoid;border:1px solid #aaa;background:white!important;color:black!important;padding:5px}body.print-sheet .sheet-section-head{margin-bottom:3px}body.print-sheet .sheet-section-head strong,body.print-sheet .sheet-section-head .meta{color:black!important;font-size:11px}body.print-sheet .sheet-inline-chords{gap:4px}body.print-sheet .sheet-chord{background:white!important;color:black!important;border:1px solid #bbb;padding:3px 5px;font-size:14px;min-width:auto}body.print-sheet .sheet-chord small{font-size:8px;color:#444}body.print-sheet .sheet-lyric{color:black;background:white;font-size:10px;line-height:1.1;padding:2px;margin-top:4px}body.print-sheet .sheet-lyric-empty{display:none}body.print-sheet #full-sheet{font-family:Arial,sans-serif}}
+</style>
+<style>
+.sheet-score{display:flex;flex-direction:column;gap:8px}.sheet-line{padding:5px 2px 7px;border-bottom:1px dashed #344c61;min-width:0}.sheet-line:last-child{border-bottom:0}.sheet-line-chords{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px}.sheet-line-chords .sheet-chord{font-size:clamp(15px,1.6vw,22px);padding:4px 9px;min-width:37px}.sheet-line-lyrics{font-size:clamp(15px,1.55vw,20px);font-weight:650;line-height:1.32;color:#f1f7ff;overflow-wrap:break-word}.chord-spacer{font-size:13px;color:#8294a5}.stage-lyric-line{padding:2px 7px;border-left:3px solid transparent;opacity:.78}.stage-lyric-line.now{color:#b8ffe0;border-color:#80e4bb;background:#19382f;border-radius:4px;opacity:1;font-weight:900}
+#full-sheet.fit .sheet-line{padding:3px 1px 4px}#full-sheet.fit .sheet-score{gap:4px}#full-sheet.fit .sheet-line-lyrics{font-size:clamp(13px,1.25vw,17px)}#full-sheet.fit .sheet-line-chords .sheet-chord{font-size:clamp(15px,1.4vw,20px);padding:3px 7px}
+@media(max-width:630px){.sheet-line-lyrics{font-size:17px}.sheet-line-chords .sheet-chord{font-size:19px}}
+@media print{.sheet-score{gap:4px}.sheet-line{break-inside:avoid;padding:2px}.sheet-line-lyrics{font-size:12px!important;color:#111!important}.sheet-line-chords .sheet-chord{font-size:12px!important;padding:2px 4px!important}}
+</style>
+
+<style id="clean-sheet-style">
+:root{--paper:#f8fafc;--sheet-ink:#17263b;--sheet-muted:#637388;--sheet-line:#dfe6ee;--sheet-blue:#1659a4;--sheet-highlight:#e3f6ed}
+#full-sheet{background:var(--paper);color:var(--sheet-ink);padding:0 max(10px,calc((100vw - 1500px)/2));}
+#full-sheet .sheet-toolbar{background:rgba(250,252,255,.985);color:var(--sheet-ink);border-bottom:1px solid var(--sheet-line);border-radius:0;top:0;margin:0;padding:10px 14px 9px;box-shadow:0 2px 14px #1834540e;}
+#full-sheet .sheet-toolbar strong{font-size:16px;color:#123d64;white-space:nowrap;letter-spacing:-.02em}
+#full-sheet .sheet-toolbar small{font-size:12px;font-weight:600;color:var(--sheet-muted)}
+#full-sheet .sheet-controls{gap:6px}
+#full-sheet .sheet-controls label{color:#455b72;font-size:12px;font-weight:700}
+#full-sheet .sheet-controls select{background:#fff;color:#24384e;border:1px solid #d5dfe9;border-radius:9px;padding:7px 9px;font-weight:700;font-size:13px;}
+#full-sheet .btn{background:#fff;border:1px solid #d6e0ea;color:#334a62;padding:7px 10px;font-size:12px}
+#full-sheet .btn.primary{background:#1d6cc3;color:#fff;border-color:#1d6cc3}
+#full-sheet .sheet-heading{padding:16px 14px 10px;align-items:center;border-bottom:0}
+#full-sheet .sheet-heading h2{font-size:clamp(23px,2.25vw,30px);color:#162f4a;line-height:1.07}
+#full-sheet .sheet-heading p{color:var(--sheet-muted);font-size:12px}
+#full-sheet .sheet-tonality{font-size:18px;font-weight:800;background:#e9f2fd;color:#185da7;border-radius:10px;padding:7px 12px}
+#full-sheet .sheet-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;align-items:stretch;margin:9px 13px 12px}
+#full-sheet .sheet-section{background:#fff;border:1px solid #e1e8f1;border-radius:11px;box-shadow:0 2px 4px #1b395506;padding:9px 10px;min-width:0}
+#full-sheet .sheet-section.active{border:1.5px solid #58b789;background:#f2fcf7}
+#full-sheet .sheet-section-head{margin-bottom:5px;display:flex;gap:5px;align-items:center}
+#full-sheet .sheet-section-head strong{font-size:12px;line-height:1.15;color:#637388;text-transform:uppercase;letter-spacing:.032em}
+#full-sheet .sheet-section-head .meta{color:#69829b;font-size:11px}
+#full-sheet .sheet-section-head .btn{font-size:11px;padding:3px 7px;opacity:.8}
+#full-sheet .sheet-score{gap:2px}
+#full-sheet .sheet-line{border-bottom:1px solid #f1f3f5;padding:4px 0 5px}
+#full-sheet .sheet-line:last-child{border:none}
+#full-sheet .sheet-line-chords{gap:3px;margin-bottom:3px}
+#full-sheet .sheet-line-chords .sheet-chord,#full-sheet .sheet-inline-chords .sheet-chord{background:transparent;color:#0b5ba9;border:0;border-radius:5px;font-size:18px;min-width:auto;padding:0px 6px 0px 0px;font-weight:850;line-height:1.25}
+#full-sheet .sheet-chord:hover{color:#104070;text-decoration:underline;background:transparent}
+#full-sheet .sheet-chord.is-current{background:#c7ebdb;color:#155f44;padding:1px 6px;border-radius:6px;box-shadow:0 0 0 1px #52a47c}
+#full-sheet .sheet-chord small{display:block;color:#587189;font-size:10px}
+#full-sheet .sheet-line-lyrics{font-size:14.5px;line-height:1.18;font-weight:540;color:#1d3147;white-space:pre-wrap;overflow-wrap:break-word}
+#full-sheet .sheet-lyric-empty{font-size:12px;color:#8192a4}
+#full-sheet .sheet-foot{color:#718297;font-size:11px;border-color:#e2eaf1;padding:5px 14px 17px}
+#full-sheet .sheet-foot a{color:#2068ae}
+#full-sheet.fit .sheet-grid{gap:7px;margin-top:5px}
+#full-sheet.fit .sheet-section{padding:6px 8px}
+#full-sheet.fit .sheet-line{padding:2px 0 3px}
+#full-sheet.fit .sheet-section-head{margin-bottom:4px}
+#full-sheet.fit .sheet-section-head strong{font-size:11px}
+#full-sheet.fit .sheet-line-lyrics{font-size:13px;line-height:1.13}
+#full-sheet.fit .sheet-line-chords .sheet-chord{font-size:16px;padding:0 5px 0 0}
+#full-sheet.fit .sheet-score{gap:1px}
+.sheet-more{position:relative;z-index:5}
+.sheet-more summary{display:block;list-style:none;background:#fff;border:1px solid #d6e0ea;border-radius:9px;padding:7px 10px;color:#38536b;font-size:12px;font-weight:720;cursor:pointer}
+.sheet-more summary::-webkit-details-marker{display:none}
+.sheet-more-menu{display:flex;flex-direction:column;gap:5px;padding:7px;border-radius:11px;position:absolute;right:0;top:calc(100% + 5px);width:175px;background:#fff;border:1px solid #d6e0ea;box-shadow:0 10px 36px #15334c38}
+.sheet-more-menu .btn{width:100%;text-align:left}
+.follow-bar{position:sticky;top:57px;z-index:2;display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:0 13px 4px;background:#edf4fc;border:1px solid #d5e3f2;border-radius:11px;padding:7px 9px;color:#173f66}
+.follow-main{display:flex;gap:7px;align-items:center;white-space:nowrap}
+.follow-icon{font-size:18px;color:#2872b7}
+.follow-mini{font-size:9px;letter-spacing:.07em;color:#7890a4;font-weight:820}
+.follow-main strong{font-size:23px;line-height:1;color:#155c9e;min-width:35px}
+.follow-arrow{color:#9bb5ce;font-size:18px}
+.follow-controls{display:flex;gap:4px;align-items:center}
+#full-sheet .follow-plain{background:#fff;border:1px solid #d6e0ea;color:#214e78;border-radius:8px;padding:5px 12px;font-size:18px;font-weight:800;cursor:pointer}
+#full-sheet .follow-mic{background:#176bc0;border:1px solid #176bc0;color:#fff;border-radius:8px;padding:7px 10px;font-size:12px;font-weight:750;cursor:pointer}
+#full-sheet .follow-mic.running{background:#14784b;border-color:#14784b}
+.follow-feedback{min-width:170px;flex:1;font-size:11px;line-height:1.18;color:#526c83}
+@media(max-width:1199px){#full-sheet .sheet-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:840px){#full-sheet .sheet-grid{grid-template-columns:repeat(2,minmax(0,1fr));}#full-sheet .sheet-toolbar strong small{display:none}#full-sheet .sheet-heading{padding:12px 10px 7px}}
+@media(max-width:600px){#full-sheet{padding:0}#full-sheet .sheet-grid{grid-template-columns:1fr;margin:5px 9px 12px}#full-sheet .sheet-toolbar{padding:9px;gap:6px}#full-sheet .sheet-toolbar strong{font-size:15px}#full-sheet .sheet-controls{width:auto}#full-sheet .sheet-controls label{font-size:11px}#full-sheet .sheet-controls select{padding:6px;max-width:155px}#full-sheet .sheet-key-change{display:none}.follow-bar{margin:0 9px 7px;top:106px}.follow-feedback{order:3;flex-basis:100%}#full-sheet .sheet-heading h2{font-size:22px}#full-sheet .sheet-section{padding:11px 13px}#full-sheet .sheet-line-lyrics{font-size:18px}#full-sheet.fit .sheet-line-lyrics{font-size:16px}#full-sheet .sheet-line-chords .sheet-chord{font-size:21px}#full-sheet.fit .sheet-line-chords .sheet-chord{font-size:19px}}
+@media(min-width:1200px){#full-sheet.song-long .sheet-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(min-width:841px) and (max-width:1199px){#full-sheet.song-long .sheet-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media print{#full-sheet{background:#fff!important}#full-sheet .sheet-toolbar,#full-sheet .follow-bar{display:none!important}#full-sheet .sheet-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#full-sheet .sheet-section{border:1px solid #ccc!important;break-inside:avoid!important}#full-sheet .sheet-line-lyrics{color:#111!important}#full-sheet .sheet-chord{color:#111!important}}
+</style>
+</head>
+<body>
+<main class="wrap" id="overview">
+ <div class="top"><div><h1>Cifras ao Vivo <span style="color:var(--accent)">♪</span></h1><p class="sub">Encontro de casais · 3 canções · modo palco e música inteira na mesma página</p></div><div class="actions"><button class="btn primary" id="open-stage">▶ Modo palco</button><button class="btn" id="open-sheet">▤ Música completa</button><button class="btn" id="print">Imprimir</button></div></div>
+ <div class="settings">
+  <label>🎸 Nível <select id="level" aria-label="Nível dos acordes"><option value="original">Original</option><option value="easy">Fácil</option><option value="basic">Básico</option></select></label>
+  <label><input class="check" type="checkbox" id="show-lyrics"> Mostrar letra</label>
+  <label title="Usa formas mais fáceis e capotraste para manter o mesmo tom"><input class="check" type="checkbox" id="use-capo"> Usar capotraste no Básico</label>
+  <label><input class="check" type="checkbox" id="modulations"> Subidas de tom da 1ª música</label>
+  <label><input class="check" type="checkbox" id="compact"> Compacto</label>
+ </div>
+ <div class="legend"><strong>Tom não muda ao simplificar:</strong> Original = acordes do guia; Fácil = substituições aproximadas; Básico = posições reduzidas. O <strong>capotraste</strong> mantém o som no tom escolhido mesmo com outras formas. <strong>Toque num acorde</strong> para ver onde colocar os dedos. Teclas: espaço/→ avança, ← volta, 1–3 troca música.</div>
+ <div class="songs" id="songs"></div>
+ <div class="footer"><span class="notice">Importante:</span> as progressões são um guia de estudo baseado no painel anterior, não uma transcrição conferida integralmente das páginas originais. Simplificações podem alterar nuances da harmonia. <strong>As letras que você enviou já estão incluídas:</strong> você pode editar cada trecho. Alterações feitas neste aparelho ficam salvas neste navegador.</div>
+</main>
+<section id="full-sheet" role="dialog" aria-modal="true" aria-label="Música completa com todos os acordes">
+ <header class="sheet-toolbar"><strong>♫ Cifras ao Vivo <small>· leitura completa</small></strong><div class="sheet-controls">
+  <label>Música <select id="sheet-song" aria-label="Selecionar música"><option value="0">Queremos Te Ver</option><option value="1">Vem Espírito</option><option value="2">Amizade Tão Bela</option></select></label>
+  <label>Nível <select id="sheet-level" aria-label="Nível dos acordes"><option value="original">Original</option><option value="easy">Fácil</option><option value="basic">Básico</option></select></label>
+  <button class="btn sheet-key-change" id="sheet-key-down" title="Descer um semitom">Tom −</button><button class="btn sheet-key-change" id="sheet-key-up" title="Subir um semitom">Tom +</button>
+  <label><input type="checkbox" id="sheet-lyrics-check"> Letra</label><label title="Reduz o tamanho para caber mais trechos em uma tela"><input type="checkbox" id="sheet-fit"> Compactar</label>
+  <details class="sheet-more"><summary>Mais opções</summary><div class="sheet-more-menu"><button class="btn" id="sheet-edit-lyrics">✎ Editar letra</button><a class="btn flat" id="sheet-original" href="#" target="_blank" rel="noopener noreferrer">Cifra original ↗</a><button class="btn" id="sheet-print">Imprimir</button></div></details><button class="btn primary" id="sheet-stage">▶ Palco</button><button class="btn" id="sheet-close">✕</button>
+ </div></header>
+ <div class="sheet-heading"><div><h2 id="sheet-title">—</h2><p id="sheet-artist">—</p></div><div class="sheet-tonality" id="sheet-key">—</div></div>
+ <div class="follow-bar">
+   <div class="follow-main"><span class="follow-icon">♪</span><span class="follow-mini">AGORA</span><strong id="sheet-now">—</strong><span class="follow-arrow">→</span><span class="follow-mini">DEPOIS</span><strong id="sheet-next">—</strong></div>
+   <div class="follow-controls"><button class="follow-plain" id="sheet-prev" title="Acorde anterior (seta para esquerda)">←</button><button class="follow-mic" id="sheet-mic">🎙️ Ouvir violão</button><button class="follow-plain" id="sheet-next-btn" title="Próximo acorde (espaço)">→</button></div>
+   <div class="follow-feedback" id="sheet-audio-status">Escuta experimental · prefira avançar manualmente se necessário</div>
+ </div>
+ <div class="sheet-grid" id="sheet-grid"></div>
+ <footer class="sheet-foot"><span>Todos os trechos em ordem. Toque em qualquer acorde para ver os dedos. Repetições aparecem como ×2, ×3 etc. Letras fornecidas já incluídas. Acordes agrupados por linha como guia de ensaio; confira o momento exato das trocas.</span><a id="sheet-source" href="#" target="_blank" rel="noopener noreferrer">Conferir cifra original ↗</a></footer>
+</section>
+<section id="stage" role="dialog" aria-modal="true" aria-label="Modo palco">
+ <div class="stagebar"><div><div class="stagetitle" id="stage-song">—</div><div class="stagemeta" id="stage-meta">—</div></div><div class="stagecontrols">
+ <select id="stage-level" aria-label="Nível"><option value="original">Original</option><option value="easy">Fácil</option><option value="basic">Básico</option></select>
+ <button class="btn" id="stage-key-down" title="Descer um semitom">Tom −</button><button class="btn" id="stage-key-up" title="Subir um semitom">Tom +</button>
+ <button class="btn" id="stage-lyrics-btn" title="Mostrar ou ocultar letra">Letra: não</button>
+ <a class="btn flat" id="stage-original" target="_blank" rel="noopener noreferrer" href="#">Letra original ↗</a><button class="btn" id="stage-shape" title="Ver posição do acorde atual">🎸 Posição</button>
+ <button class="btn" id="toggle-auto">Auto: não</button><button class="btn" id="toggle-listen" title="Escuta experimental pelo microfone; pode errar com voz e ruído">🎙️ Ouvir: não</button><button class="btn" id="stage-close">✕ Sair</button>
+ </div></div>
+ <div class="stage-center"><div class="bigbox current" id="current-box"><div class="over">TOQUE AGORA</div><div class="giant" id="current-chord">—</div><div class="underchord" id="current-shape"></div><div class="seclabel" id="current-section">—</div></div><div class="bigbox next"><div class="over">PRÓXIMO</div><div class="giant small" id="next-chord">—</div><div class="underchord" id="next-shape"></div><div class="seclabel" id="next-section">—</div></div></div>
+ <div class="upcoming" id="upcoming"></div>
+ <div class="stage-lyrics hidden" id="stage-lyrics"><div class="lyrics-head"><span id="lyrics-section">LETRA · TRECHO ATUAL</span><button class="btn tiny" id="stage-edit-lyrics">Editar letra</button></div><div class="lyrics-body" id="lyrics-body"></div></div>
+ <div class="stage-bottom"><button class="bigbtn" id="back">← Voltar</button><button class="bigbtn primary" id="forward">Próximo acorde →</button><button class="bigbtn" id="next-part">Próxima parte ↪</button></div>
+ <div class="hint" id="audio-status">Espaço/→ próximo · ← voltar · ↓ próxima parte · C posição · L letra · 1,2,3 música · Esc sair. Auto por tempo não escuta. Microfone experimental ainda pode errar.</div>
+</section>
+<div class="modal-backdrop" id="diagram-backdrop" role="dialog" aria-modal="true" aria-label="Posição do acorde"><div class="modal" style="max-width:620px"><div class="modal-top"><div><h3 id="diagram-title">Acorde</h3><div class="muted" id="diagram-subtitle"></div></div><button class="btn" id="diagram-close">Fechar ✕</button></div><div class="diagram-container"><div id="diagram-svg"></div><div class="diagram-notes" id="diagram-notes"></div></div><div class="modal-actions"><button class="btn primary" id="diagram-go">▶ Tocar a partir daqui</button></div></div></div>
+<div class="modal-backdrop" id="lyrics-backdrop" role="dialog" aria-modal="true" aria-label="Adicionar letra"><div class="modal"><div class="modal-top"><div><h3 id="lyrics-title">Adicionar letra</h3><div class="modal-desc">1. Abra a letra no Cifra Club. 2. Copie o texto da sua cópia. 3. Volte e use o botão <strong>Colar área de transferência</strong> (ou cole manualmente). 4. Distribua por trechos. As letras fornecidas já estão disponíveis. Edições adicionais ficam salvas apenas neste navegador.</div><p><a class="btn flat" id="lyrics-original" href="#" target="_blank" rel="noopener noreferrer">Abrir letra/cifra oficial ↗</a></p></div><button class="btn" id="lyrics-close">Fechar ✕</button></div><label for="lyric-bulk" style="font-size:13px;font-weight:700">Colar letra completa (opcional)</label><textarea id="lyric-bulk" rows="5" placeholder="Cole aqui os versos. Separe cada bloco com uma linha em branco..."></textarea><div class="lyric-tools"><button class="btn" id="paste-clipboard">Colar área de transferência</button><button class="btn primary" id="split-lyrics">Distribuir por trechos</button><button class="btn" id="clear-lyrics">Limpar a letra da música</button></div><div class="lyric-grid"><div><label for="lyric-section-select" style="font-size:13px;font-weight:700">Editar um trecho</label><select id="lyric-section-select" class="section-select"></select><div class="modal-desc" id="lyric-counter"></div></div><div><textarea id="lyric-section-text" rows="6" placeholder="Texto mostrado nesta parte da música. Pode usar várias linhas."></textarea><div class="modal-actions"><button class="btn primary" id="save-lyric-section">Salvar este trecho</button><button class="btn" id="lyrics-next">Próximo trecho →</button></div></div></div></div></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+(()=>{'use strict';
+const SONGS=[
+ {"name":"Queremos Te Ver","artist":"Davidson Silva","key":"E","url":"https://www.cifraclub.com.br/davidson-silva/queremos-te-ver/","sections":[{"name":"Introdução vocal","ch":"E B/D# C#m A","lineMap":[1,1,1,1]},{"name":"Estrofe","ch":"E B C#m A","lineMap":[1,1,1,1]},{"name":"Fecho da estrofe","ch":"D B E","lineMap":[3]},{"name":"Refrão · 1","ch":"E B F#m A C#m A E","lineMap":[1,1,2,1,2]},{"name":"Refrão · 2","ch":"E B F#m A C#m B A E","lineMap":[1,1,2,1,1,2]},{"name":"Ponte / retorno instrumental","ch":"F#m C#m B E"}],"mod":[{"name":"Modulação para F# (opcional)","ch":"F# C# G#m B D#m C# F#","lineMap":[1,1,1,1,3]},{"name":"Modulação para G# (opcional)","ch":"G# D# A#m C# E#m D# G#","lineMap":[1,1,1,1,1,2]}]},
+ {"name":"Vem Espírito","artist":"Padre Marcelo Rossi","key":"A","url":"https://www.cifraclub.com.br/padre-marcelo-rossi/vem-espirito/","sections":[{"name":"Introdução (instrumental opcional)","ch":"A D/A E/A A"},{"name":"Eu quero amar · 1","ch":"A E/G# F#m7 C#m7","lineMap":[1,1,2]},{"name":"Sozinho eu não posso · 1","ch":"G9 F#m7 G9 F#m7 G9 D/E A","lineMap":[2,2,3]},{"name":"Eu quero amar · 2","ch":"A E/G# F#m7 C#m7","lineMap":[1,1,2]},{"name":"Sozinho eu não posso · 2","ch":"G9 F#m7 G9 F#m7 G9 D/E A","lineMap":[2,2,3]},{"name":"Vem Espírito · refrão 1","ch":"A D/A E/A A","lineMap":[2,2]},{"name":"Sozinho · refrão 1","ch":"G9 F#m7 G9 F#m7 G9 D/E A","lineMap":[2,2,3]},{"name":"Eu quero amar · 3","ch":"A E/G# F#m7 C#m7","lineMap":[1,1,2]},{"name":"Sozinho eu não posso · 3","ch":"G9 F#m7 G9 F#m7 G9 D/E A","lineMap":[2,2,3]},{"name":"Eu quero amar · 4","ch":"A E/G# F#m7 C#m7","lineMap":[1,1,2]},{"name":"Sozinho eu não posso · 4","ch":"G9 F#m7 G9 F#m7 G9 D/E A","lineMap":[2,2,3]},{"name":"Eu quero amar · 5","ch":"A E/G# F#m7 C#m7","lineMap":[1,1,2]},{"name":"Sozinho eu não posso · 5","ch":"G9 F#m7 G9 F#m7 G9 D/E A","lineMap":[2,2,3]},{"name":"Vem Espírito · refrão 2","ch":"A D/A E/A A","lineMap":[2,2]},{"name":"Sozinho · refrão 2","ch":"G9 F#m7 G9 F#m7 G9 D/E A","lineMap":[2,2,3]}]},
+ {"name":"Amizade Tão Bela","artist":"Comunidade Católica Shalom","key":"D","url":"https://www.cifraclub.com.br/comunidade-catolica-shalom/amizade-tao-bela/","sections":[{"name":"Introdução (instrumental opcional)","ch":"D G Em A4"},{"name":"Estrofe · 1","ch":"D Em G A","lineMap":[4]},{"name":"Estrofe · 2","ch":"D Em Gm A","lineMap":[4]},{"name":"Estrofe · 3","ch":"D Em G A","lineMap":[4]},{"name":"Estrofe · 4","ch":"D Em Gm A","lineMap":[4]},{"name":"Refrão · 1","ch":"G A F#m Bm G A D","lineMap":[4,3]},{"name":"Refrão · 2","ch":"G A F#m Bm Em F#m Gm","lineMap":[4,3]},{"name":"Final opcional","ch":"D"}]}
+];
+const DEFAULT_LYRICS=[["Ohh ohh\nNara nara nara naaaa\nOhh ohh\nNara nara nara naaaa","Senhor, é bom estar, estar contigo aqui\nReunidos em Tua casa\nUm dia é mais que mil\nDiante do Teu altar","Teu amor nos transformará","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nContemplar o teu olhar","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nTransfigura-nos em Ti\nJesus","","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nContemplar o teu olhar","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nTransfigura-nos em Ti\nJesus"],["","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Vem, Espírito!\nVem, Espírito!","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Vem, Espírito!\nVem, Espírito!","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver"],["","Tua vida é um dom de alegria e festa","Cantada com esplendor, com amor e graça","O Pai contempla na glória e com um sopro te cria","Te chama a uma amizade, amizade tão bela","Tu és meu irmão, reflexo da Trindade\nShalom do Pai pra nossa vida","Tu és meu irmão, reflexo da Trindade\nShalom do Pai pra nossa vida",""]];
+const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const PITCH=Object.fromEntries(NOTES.map((x,i)=>[x,i]));Object.assign(PITCH,{Db:1,Eb:3,Gb:6,Ab:8,Bb:10,Cb:11,Fb:4,'E#':5,'B#':0});
+const EASY={'B/D#':'B7','D/A':'D','E/A':'E','G9':'G','D/E':'E7','E/G#':'E','B':'B7','C#m':'C#m7','F#m':'F#m7','Bm':'Bm7','Gm':'Gm/D','A4':'A','F#':'F#7','C#':'C#7','G#m':'G#m7','D#m':'D#m7','G#':'G#7','D#':'D#7','A#m':'A#m7','E#m':'Fm7'};
+const BASIC={...EASY,'F#m7':'F#m7','C#m7':'C#m7','F#m':'F#m7','Bm':'Bm7'};
+const SHAPES={
+ 'C':[-1,3,2,0,1,0],'C7':[-1,3,2,3,1,0],'Cmaj7':[-1,3,2,0,0,0],'Cm':[-1,3,5,5,4,3],'Cm7':[-1,3,5,3,4,3],
+ 'D':[-1,-1,0,2,3,2],'D7':[-1,-1,0,2,1,2],'Dm':[-1,-1,0,2,3,1],'Dm7':[-1,-1,0,2,1,1],
+ 'E':[0,2,2,1,0,0],'E7':[0,2,0,1,0,0],'Em':[0,2,2,0,0,0],'Em7':[0,2,0,0,0,0],
+ 'F':[1,3,3,2,1,1],'Fmaj7':[-1,-1,3,2,1,0],'Fm':[1,3,3,1,1,1],
+ 'G':[3,2,0,0,0,3],'G7':[3,2,0,0,0,1],'G9':[3,-1,0,2,0,1],'Gm':[3,5,5,3,3,3],
+ 'A':[-1,0,2,2,2,0],'A7':[-1,0,2,0,2,0],'Am':[-1,0,2,2,1,0],'Am7':[-1,0,2,0,1,0],'Asus4':[-1,0,2,2,3,0],'A4':[-1,0,2,2,3,0],
+ 'B':[-1,2,4,4,4,2],'B7':[-1,2,1,2,0,2],'Bm':[-1,2,4,4,3,2],'Bm7':[-1,2,0,2,0,2],
+ 'C#m7':[-1,4,2,1,0,0],'C#m':[-1,4,6,6,5,4],'F#m':[2,4,4,2,2,2],'F#m7':[2,-1,2,2,2,0],
+ 'Gm/D':[-1,-1,0,3,3,3],'Bb/D':[-1,-1,0,3,3,1],'B/D#':[-1,6,4,4,4,2],
+ 'D/A':[-1,0,0,2,3,2],'E/A':[-1,0,2,1,0,0],'D/E':[0,-1,0,2,3,2],'E/G#':[4,-1,2,4,0,0]
+};
+const $=id=>document.getElementById(id);
+const initial={song:0,step:0,level:'easy',showLyrics:true,useCapo:false,mod:false,compact:false,sheetSong:0,sheetLyrics:true,sheetFit:true,transpose:[0,0,0],lyrics:[{},{},{}]};
+let saved={};try{saved=JSON.parse(localStorage.getItem('casais-cifras-v3')||'{}')||{};}catch(e){}
+const state={...initial,...saved,transpose:Array.isArray(saved.transpose)&&saved.transpose.length===3?saved.transpose:[0,0,0],lyrics:Array.isArray(saved.lyrics)&&saved.lyrics.length===3?saved.lyrics:[{},{},{}],auto:false,seconds:4,stage:false};
+if(!['original','easy','basic'].includes(state.level))state.level='easy';state.sheetSong=Math.max(0,Math.min(2,Number(state.sheetSong)||0));state.sheetLyrics=!!state.sheetLyrics;state.sheetFit=state.sheetFit!==false;state.sheet=false;
+let timer=null,wake=null,toastTimer=null,modalSong=0,modalSection=0,modalStep=0;
+let micStream=null,micCtx=null,micAnalyser=null,micSamples=null,micTimer=null,micLastAdvance=0,micCandidateSince=0,micCandidate=-1;
+function lyricText(i,si){const custom=state.lyrics[i]||{};return Object.prototype.hasOwnProperty.call(custom,si)?custom[si]:(DEFAULT_LYRICS[i]?.[si]||'');}
+function lyricLines(text){return String(text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);}
+function lineCounts(sec,n){
+ const chords=sec.ch.trim().split(/\s+/),m=chords.length,original=Array.isArray(sec.lineMap)?sec.lineMap:[];
+ if(original.length===n&&original.every(x=>Number.isInteger(x)&&x>=0)&&original.reduce((a,b)=>a+b,0)===m)return original;
+ const counts=Array(n).fill(0);for(let k=0;k<m;k++)counts[Math.min(n-1,Math.floor(k*n/m))]++;
+ return counts;
+}
+function lineAtChord(sec,lyric,ci){const lines=lyricLines(lyric);if(!lines.length)return -1;const groups=lineCounts(sec,lines.length);let cursor=0;for(let n=0;n<groups.length;n++){cursor+=groups[n];if(ci<cursor)return n;}return lines.length-1;}
+function scoreLines(i,sec,si,start,lyric){
+ const lines=lyricLines(lyric),chords=sec.ch.trim().split(/\s+/),groups=lineCounts(sec,lines.length);let ci=0;
+ return `<div class="sheet-score">`+lines.map((line,k)=>{let ch='';for(let j=0;j<groups[k];j++){const c=shownChord(i,chords[ci]);ch+=`<button class="sheet-chord ${i===state.song&&start+ci===state.step?'is-current':''}" data-sheet-chord="${start+ci}" title="Ver posição de ${esc(c.shape)}">${esc(c.shape)}${c.capo?`<small>soa ${esc(c.sounding)}</small>`:''}</button>`;ci++;}return `<div class="sheet-line"><div class="sheet-line-chords">${ch||'<span class="chord-spacer">·</span>'}</div><div class="sheet-line-lyrics">${esc(line)}</div></div>`;}).join('')+'</div>';
+}
+function store(){try{localStorage.setItem('casais-cifras-v3',JSON.stringify({level:state.level,showLyrics:state.showLyrics,useCapo:state.useCapo,mod:state.mod,compact:state.compact,transpose:state.transpose,lyrics:state.lyrics,song:state.song,step:state.step,sheetSong:state.sheetSong,sheetLyrics:state.sheetLyrics,sheetFit:state.sheetFit}));}catch(e){}}
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function noteShift(n,by){return NOTES[((n+by)%12+12)%12];}
+function chordShift(s,by){const m=/^([A-G](?:#|b)?)(maj7|m7|sus4|sus2|m|7|9|4)?(?:\/([A-G](?:#|b)?))?$/.exec(s);if(!m)return s;const p=PITCH[m[1]],bass=m[3]?PITCH[m[3]]:null;return p===undefined?s:noteShift(p,by)+(m[2]||'')+(bass===null?'':'/'+noteShift(bass,by));}
+function songKey(i){return chordShift(SONGS[i].key,state.transpose[i]);}
+function getSections(i){return [...SONGS[i].sections,...(i===0&&state.mod?SONGS[i].mod:[])];}
+function flatten(i){const a=[];getSections(i).forEach((section,si)=>{const chords=section.ch.trim().split(/\s+/);for(let rep=0;rep<(section.repeat||1);rep++)chords.forEach((raw,ci)=>a.push({raw,si,rep,ci,total:section.repeat||1,sec:section.name}));});return a;}
+function capoFor(i){if(state.level!=='basic'||!state.useCapo)return{fret:0,shape:SONGS[i].key};const pitch=PITCH[songKey(i)];const candidates=(i===0?['C','D','G']:(i===1?['G','C','D']:['D','C','G']));let choices=[];candidates.forEach((k,order)=>{const fret=((pitch-PITCH[k])%12+12)%12;if(fret<=7)choices.push({fret,shape:k,score:order*3+fret*.15});});choices.sort((a,b)=>a.score-b.score);return choices[0]||{fret:0,shape:songKey(i)};}
+function shownChord(i,raw){let ch=raw;if(state.level==='easy')ch=EASY[ch]||ch;if(state.level==='basic')ch=BASIC[ch]||ch;const sounding=chordShift(ch,state.transpose[i]);const capo=capoFor(i);let shape=capo.fret?chordShift(sounding,-capo.fret):sounding;
+ if(state.level==='basic'){
+  const simplified={'F':'Fmaj7','Bb':'Bb/D','A#':'Bb/D','Gm':'Gm/D'};
+  shape=simplified[shape]||shape;
+ }
+ return {shape,sounding,capo:capo.fret,raw,approx:shape!==sounding&&capo.fret===0||ch!==raw};}
+function clampStep(){const a=flatten(state.song);state.step=Math.max(0,Math.min(state.step,a.length-1));}
+function toast(s){const el=$('toast');el.textContent=s;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),3000);}
+function syncControls(){$('level').value=state.level;$('stage-level').value=state.level;$('show-lyrics').checked=state.showLyrics;$('use-capo').checked=state.useCapo;$('modulations').checked=state.mod;$('compact').checked=state.compact;$('sheet-song').value=String(state.sheetSong);$('sheet-level').value=state.level;$('sheet-lyrics-check').checked=state.sheetLyrics;$('sheet-fit').checked=state.sheetFit;$('stage-lyrics-btn').textContent=state.showLyrics?'Letra: sim':'Letra: não';}
+function renderOverview(){syncControls();let html='';SONGS.forEach((song,i)=>{const list=getSections(i),seq=flatten(i),item=i===state.song?seq[state.step]:null,capo=capoFor(i),key=songKey(i);let offset=0;
+ html+=`<article class="song ${state.song===i?'active':''}"><div class="songhead"><div><h2>${esc(song.name)}</h2><div class="artist">${esc(song.artist)}</div></div><div class="keybox">Tom<strong>${esc(key)}</strong></div></div>`;
+ html+=`<div class="transpose"><button class="btn" data-tune="${i}" data-diff="-1" title="Descer semitom">−</button><select aria-label="Tom de ${esc(song.name)}" data-key="${i}">${NOTES.map(n=>`<option ${key===n?'selected':''} value="${n}">${n}</option>`).join('')}</select><button class="btn" data-tune="${i}" data-diff="1" title="Subir semitom">+</button><button class="btn tiny flat" data-reset="${i}" title="Voltar ao tom escolhido inicialmente">↺</button></div>`;
+ html+=`<div class="tip">${capo.fret?`Capotraste casa ${capo.fret} · toque as formas relativas a <b>${capo.shape}</b> · tom soando ${key}`:`${state.level==='original'?'Versão original do guia':state.level==='easy'?'Simplificações de acordes · tom preservado':'Acordes básicos · tom preservado'}`} </div>`;
+ html+=`<div class="songactions"><button class="btn primary" data-play="${i}">▶ Tocar</button><button class="btn" data-sheet-open="${i}">▤ Música completa</button><button class="btn" data-add-lyrics="${i}">✎ Editar letra</button><a class="btn flat" target="_blank" rel="noopener noreferrer" href="${song.url}">Letra oficial ↗</a></div>`;
+ list.forEach((sec,si)=>{const chords=sec.ch.trim().split(/\s+/),first=offset;offset+=chords.length*(sec.repeat||1);const active=state.song===i&&item&&item.si===si;html+=`<div class="section ${active?'active':''}"><div class="sectionhead"><span class="sectionname">${esc(sec.name)}</span>${sec.repeat>1?`<span class="repeat">×${sec.repeat}</span>`:''}</div><div class="chords">`;
+ chords.forEach((raw,ci)=>{const display=shownChord(i,raw),now=active&&item.ci===ci;html+=`<button class="chord ${now?'current':''}" data-chord-song="${i}" data-chord-step="${first+ci}" title="Ver como fazer ${esc(display.shape)}">${esc(display.shape)}${display.capo?`<small>soa ${esc(display.sounding)}</small>`:''}</button>`;});html+='</div>';
+ if(state.showLyrics){const lyric=lyricText(i,si);if(lyric)html+=`<div class="section-lyrics">${esc(lyric)}</div>`;else html+=`<div class="note">Trecho instrumental · <button type="button" class="btn tiny" data-add-lyrics="${i}">Colar agora</button></div>`;}
+ if(sec.note)html+=`<div class="note">${esc(sec.note)}</div>`;html+='</div>';
+ });html+='</article>';
+ });$('songs').innerHTML=html;document.body.classList.toggle('compact',state.compact);
+ document.querySelectorAll('[data-play]').forEach(e=>e.onclick=()=>{selectSong(+e.dataset.play);openStage();});
+  document.querySelectorAll('[data-sheet-open]').forEach(e=>e.onclick=()=>openSheet(+e.dataset.sheetOpen));
+ document.querySelectorAll('[data-add-lyrics]').forEach(e=>e.onclick=()=>openLyrics(+e.dataset.addLyrics));
+ document.querySelectorAll('[data-chord-step]').forEach(e=>e.onclick=()=>openDiagram(+e.dataset.chordSong,+e.dataset.chordStep));
+ document.querySelectorAll('[data-tune]').forEach(e=>e.onclick=()=>changeKey(+e.dataset.tune,+e.dataset.diff));
+ document.querySelectorAll('[data-reset]').forEach(e=>e.onclick=()=>{state.transpose[+e.dataset.reset]=0;update();});
+ document.querySelectorAll('[data-key]').forEach(e=>e.onchange=()=>{const i=+e.dataset.key;state.transpose[i]=(PITCH[e.value]-PITCH[SONGS[i].key]+12)%12;update();});
+}
+function renderStage(){clampStep();syncControls();const i=state.song,s=SONGS[i],seq=flatten(i),cur=seq[state.step],next=seq[state.step+1],current=shownChord(i,cur.raw),following=next?shownChord(i,next.raw):null,capo=capoFor(i);
+ $('stage-song').textContent=`${i+1}. ${s.name}`;$('stage-original').href=s.url;
+ $('stage-meta').textContent=`Tom ${songKey(i)} · ${state.level==='original'?'Original':state.level==='easy'?'Fácil':'Básico'} · ${capo.fret?`capotraste ${capo.fret} · `:''}${state.step+1}/${seq.length}`;
+ $('current-chord').textContent=current.shape;$('next-chord').textContent=following?following.shape:'FIM';
+ $('current-shape').textContent=current.capo?`Forma ${current.shape} · soa ${current.sounding}`:(current.shape!==current.sounding?`Acorde simplificado · função aproximada`:'');
+ $('next-shape').textContent=following&&following.capo?`soa ${following.sounding}`:'';
+ $('current-section').textContent=cur.sec+(cur.total>1?` · volta ${cur.rep+1}/${cur.total}`:'');
+ $('next-section').textContent=next?next.sec:'Fim da música';
+ $('upcoming').innerHTML=seq.slice(state.step+2,state.step+6).map(p=>`<span class="pill">${esc(shownChord(i,p.raw).shape)}</span>`).join('');
+ $('stage-lyrics').classList.toggle('hidden',!state.showLyrics);$('lyrics-section').textContent='LETRA · '+cur.sec;
+ const lyric=lyricText(i,cur.si);if(lyric){const lines=lyricLines(lyric),active=lineAtChord(getSections(i)[cur.si],lyric,cur.ci);$('lyrics-body').innerHTML=lines.map((line,j)=>`<div class="stage-lyric-line ${j===active?'now':''}">${esc(line)}</div>`).join('');}
+ else $('lyrics-body').textContent=`TRECHO: ${cur.sec}\nParte instrumental. Continue acompanhando os acordes acima.`;
+ $('lyrics-body').classList.toggle('lyrics-empty',!lyric);
+ $('toggle-auto').textContent=state.auto?`Auto: ${state.seconds}s`:'Auto: não';
+}
+function renderSheet(){
+ syncControls();const i=state.sheetSong,song=SONGS[i],list=getSections(i),capo=capoFor(i),tone=songKey(i);let pos=0;
+ $('sheet-original').href=song.url;$('sheet-title').textContent=song.name;$('sheet-artist').textContent=`${song.artist} · ${state.level==='original'?'Original':state.level==='easy'?'Fácil':'Básico'}${capo.fret?` · capotraste casa ${capo.fret}`:''}`;$('sheet-key').textContent='Tom '+tone;$('sheet-source').href=song.url;
+ $('full-sheet').classList.toggle('fit',state.sheetFit);
+ const html=list.map((sec,si)=>{
+   const start=pos,chords=sec.ch.trim().split(/\s+/);pos+=chords.length*(sec.repeat||1);
+   const current=state.song===i&&flatten(i)[state.step]?.si===si;
+   const buttons=chords.map((raw,j)=>{const c=shownChord(i,raw);return `<button class="sheet-chord ${i===state.song&&start+j===state.step?'is-current':''}" data-sheet-chord="${start+j}" title="Ver posição de ${esc(c.shape)}">${esc(c.shape)}${c.capo?`<small>soa ${esc(c.sounding)}</small>`:''}</button>`;}).join('');
+   const lyric=lyricText(i,si);
+   const content=state.sheetLyrics&&lyric?scoreLines(i,sec,si,start,lyric):`<div class="sheet-inline-chords">${buttons}</div>${state.sheetLyrics?`<div class="sheet-lyric-empty">${/instrumental|ponte|final opcional/i.test(sec.name)?'Instrumental / passagem opcional':'Trecho instrumental · só acordes'} <button type="button" class="btn tiny" data-sheet-lyrics="${si}">Editar</button></div>`:''}`;
+   return `<article class="sheet-section ${current?'active':''}"><div class="sheet-section-head"><strong>${String(si+1).padStart(2,'0')} · ${esc(sec.name)}</strong><span class="meta">${sec.repeat>1?`Repetir ×${sec.repeat}`:''}</span><button class="btn tiny" data-sheet-start="${start}" title="Retomar acompanhamento neste trecho">↳</button></div>${content}</article>`;
+ }).join('');
+ $('full-sheet').classList.toggle('song-long',list.length>10);$('sheet-grid').innerHTML=html;const f=flatten(i),now=f[state.step],later=f[state.step+1];$('sheet-now').textContent=now?shownChord(i,now.raw).shape:'—';$('sheet-next').textContent=later?shownChord(i,later.raw).shape:'FIM';$('sheet-mic').textContent=micStream?'🎙️ Ouvindo · parar':'🎙️ Ouvir violão';$('sheet-mic').classList.toggle('running',!!micStream);
+ document.querySelectorAll('[data-sheet-chord]').forEach(e=>e.onclick=()=>openDiagram(i,+e.dataset.sheetChord));
+ document.querySelectorAll('[data-sheet-start]').forEach(e=>e.onclick=()=>{const step=+e.dataset.sheetStart;state.song=i;state.step=step;micCandidate=-1;micCandidateSince=0;micHistory=[];update();toast('Acompanhamento retomado neste trecho.');});
+ document.querySelectorAll('[data-sheet-lyrics]').forEach(e=>e.onclick=()=>openLyrics(i,+e.dataset.sheetLyrics));
+}
+
+function openSheet(i=state.song){if(state.stage)closeStage();i=Math.max(0,Math.min(2,i));if(state.song!==i)selectSong(i);state.sheetSong=i;state.sheet=true;$('full-sheet').classList.add('show');update();$('full-sheet').scrollTop=0;requestWake();}
+function closeSheet(){state.sheet=false;stopListen();$('full-sheet').classList.remove('show');if(!state.stage&&wake){wake.release().catch(()=>{});wake=null;}}
+function update(){clampStep();store();renderOverview();renderStage();renderSheet();}
+function selectSong(i,step=0){state.song=Math.max(0,Math.min(2,i));state.step=step;stopAuto();stopListen();update();}
+function changeKey(i,amount){const v=state.transpose[i];state.transpose[i]=((v+amount+12)%12);update();toast(`${SONGS[i].name}: tom ${songKey(i)}`);}
+function move(delta){const len=flatten(state.song).length,t=Math.max(0,Math.min(len-1,state.step+delta));if(delta>0&&t===state.step){stopAuto();toast('Fim desta música. Mude de música ou volte.');return;}state.step=t;update();}
+function nextPart(){const arr=flatten(state.song),at=arr[state.step],n=arr.findIndex((v,i)=>i>state.step&&v.si!==at.si);if(n===-1){toast('Você chegou ao último trecho.');stopAuto();return;}state.step=n;update();}
+async function requestWake(){try{if('wakeLock' in navigator&&!wake){wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>wake=null);}}catch(e){}}
+function openStage(){if(state.sheet)closeSheet();state.stage=true;$('stage').classList.add('show');update();requestWake();}
+function closeStage(){state.stage=false;stopAuto();stopListen();$('stage').classList.remove('show');if(wake){wake.release().catch(()=>{});wake=null;}}
+function stopAuto(){state.auto=false;clearInterval(timer);timer=null;if($('stage-song'))renderStage();}
+function toggleAuto(){if(state.auto){stopAuto();return;}stopListen();const s=prompt('Avançar um acorde a cada quantos segundos (2 a 12)? O microfone NÃO é usado.',String(state.seconds));if(s===null)return;const n=Number(s.replace(',','.'));if(!Number.isFinite(n)||n<2||n>12){toast('Digite um número entre 2 e 12.');return;}state.seconds=n;state.auto=true;timer=setInterval(()=>move(1),n*1000);renderStage();toast('Modo automático segue tempo fixo, não a voz.');}
+// Escuta experimental de acorde, processada somente no navegador: NÃO identifica a letra nem a posição da música por voz.
+// Somente sugere avançar quando o próximo acorde tem notas inequivocamente mais prováveis que o atual.
+function pitchSet(ch){const m=/^([A-G](?:#|b)?)(maj7|m7|sus4|sus2|m|7|9|4)?/.exec(ch);if(!m)return null;const r=PITCH[m[1]];if(r===undefined)return null;const q=m[2]||'';const intervals=q==='m'||q==='m7'?[0,3,7]:(q==='sus4'||q==='4'?[0,5,7]:(q==='sus2'?[0,2,7]:[0,4,7]));return intervals.map(x=>(r+x)%12);}
+// Reconhecimento local experimental de acordes: compara notas efetivamente ouvidas
+// com os acordes atual e seguinte. Nao reconhece letra nem tem trilha de referencia.
+let micHistory=[],micPrevBest='',micStableStart=0,micNoiseFloor=-90;
+function chordProfile(ch){
+  const m=/^([A-G](?:#|b)?)(maj7|m7|sus4|sus2|m|7|9|4)?/.exec(ch);if(!m)return null;
+  const root=PITCH[m[1]];if(root===undefined)return null;const q=m[2]||'';
+  const minor=q==='m'||q==='m7';const third=(q==='sus4'||q==='4')?5:(q==='sus2'?2:(minor?3:4));
+  const pc=[root,(root+third)%12,(root+7)%12];return{pc,root,third,minor};
+}
+function profileSimilarity(ch, chrom){
+  const p=chordProfile(ch);if(!p)return -1;
+  const inNotes=p.pc;const total=chrom.reduce((a,b)=>a+b,0)||1;
+  const root=chrom[inNotes[0]]/total,third=chrom[inNotes[1]]/total,fifth=chrom[inNotes[2]]/total;
+  // Tonica e terça importam mais que quinta, presente em muitos acordes vizinhos.
+  const score=.41*root+.41*third+.18*fifth;
+  const fraction=root+third+fifth;
+  return score + .10*fraction - .06*Math.max(0,1-fraction);
+}
+function micStatus(msg){const t='🎙️ '+msg;if($('audio-status'))$('audio-status').textContent=t;if($('sheet-audio-status'))$('sheet-audio-status').textContent=t;}
+function spectrumChroma(){
+  if(!micAnalyser||!micSamples)return null;
+  micAnalyser.getFloatFrequencyData(micSamples);
+  const rate=micCtx.sampleRate,fft=micAnalyser.fftSize;
+  const chrom=Array(12).fill(0);
+  let peaks=0,energy=0;
+  // Picos espectrais em frequencias de notas. Evita somar ruido de todos os bins.
+  const maxIndex=Math.min(micSamples.length-2,Math.floor(1480*fft/rate));
+  const minIndex=Math.max(1,Math.ceil(77*fft/rate));
+  for(let k=minIndex;k<=maxIndex;k++){
+    const db=micSamples[k];
+    if(!Number.isFinite(db)||db<-79||db<micSamples[k-1]||db<micSamples[k+1])continue;
+    const f=k*rate/fft,midi=69+12*Math.log2(f/440),rounded=Math.round(midi);
+    const cents=Math.abs(midi-rounded)*100;if(cents>42)continue;
+    // Picos mais fortes recebem mais peso, mas a nota aguda nao domina o som.
+    const strength=Math.pow(10,(Math.max(-79,db)+60)/32)/Math.pow(f/220,.38);
+    if(strength<0.15)continue;
+    const pc=((rounded%12)+12)%12;
+    chrom[pc]+=strength*(1-cents/180);
+    energy+=strength;peaks++;
+  }
+  if(peaks<2||energy<1.5)return null;
+  return chrom;
+}
+function listenFrame(){
+  if(!micAnalyser||!micCtx)return;
+  const raw=spectrumChroma();
+  if(!raw){micCandidate=-1;micCandidateSince=0;micStatus('Sem som harmônico suficiente. Aproxime o microfone do violão.');return;}
+  micHistory.push(raw);if(micHistory.length>5)micHistory.shift();
+  const chrom=Array(12).fill(0);for(const c of micHistory)c.forEach((v,i)=>chrom[i]+=v);
+  const total=chrom.reduce((a,b)=>a+b,0);
+  if(total<4){micStatus('Som baixo. Toque um acorde mais perto do microfone.');return;}
+  const seq=flatten(state.song);const cur=seq[state.step],next=seq[state.step+1];
+  if(!cur||!next){micStatus('Fim da música. Avance manualmente ou selecione outra.');return;}
+  const currentName=shownChord(state.song,cur.raw).sounding;
+  const nextName=shownChord(state.song,next.raw).sounding;
+  const a=chordProfile(currentName),b=chordProfile(nextName);
+  if(!a||!b){micStatus('Acorde não reconhecido no guia. Use as setas.');return;}
+  const equal=a.pc.every((v,i)=>v===b.pc[i]);
+  if(equal){micStatus(`O próximo (${nextName}) tem as mesmas notas de ${currentName}; avance com →.`);return;}
+  const currScore=profileSimilarity(currentName,chrom),nextScore=profileSimilarity(nextName,chrom);
+  const ranked=chrom.map((v,i)=>({i,v})).sort((x,y)=>y.v-x.v).slice(0,3);
+  const heard=ranked.map(x=>NOTES[x.i]).join(' · ');
+  const margin=nextScore-currScore;
+  const now=performance.now();
+  // Somente avançar quando o próximo for claramente preferível por ~0,7s;
+  // há intervalo de espera para evitar que harmônicos/strumming disparem duas vezes.
+  const nextTones=(chrom[b.pc[0]]+chrom[b.pc[1]])/total;
+  const reliable=nextScore>.10 && margin>.052 && nextTones>.22;
+  if(reliable && now-micLastAdvance>1050){
+    if(micCandidate!==state.step+1){micCandidate=state.step+1;micCandidateSince=now;}
+    else if(now-micCandidateSince>620){
+      const old=state.step;state.step=Math.min(state.step+1,seq.length-1);
+      micLastAdvance=now;micCandidate=-1;micCandidateSince=0;micHistory=[];
+      update();micStatus(`✓ Acorde ${nextName} reconhecido (estimativa). Passou de ${old+1} para ${state.step+1}.`);return;
+    }
+  }else{micCandidate=-1;micCandidateSince=0;}
+  micStatus(`Notas: ${heard} · ${currentName}: ${(currScore*100).toFixed(0)} · ${nextName}: ${(nextScore*100).toFixed(0)} · ${reliable?'validando troca…':'aguardando mudança…'}`);
+}
+function stopListen(){
+ if(micTimer){clearInterval(micTimer);micTimer=null;}
+ if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null;}
+ if(micCtx){micCtx.close().catch(()=>{});micCtx=null;}
+ micAnalyser=null;micSamples=null;micCandidate=-1;micCandidateSince=0;micHistory=[];
+ if($('toggle-listen'))$('toggle-listen').textContent='🎙️ Ouvir: não';
+ if($('sheet-mic')){$('sheet-mic').textContent='🎙️ Ouvir violão';$('sheet-mic').classList.remove('running');}
+ micStatus('Microfone desligado. Use as setas ou o modo palco.');
+}
+async function toggleListen(){
+ if(micStream){stopListen();return;}stopAuto();
+ if(!navigator.mediaDevices?.getUserMedia){toast('O microfone exige HTTPS ou localhost. Use a versão online HTTPS ou avance pelas setas.');return;}
+ let stream=null,ctx=null;
+ try{
+   stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+   const Audio=window.AudioContext||window.webkitAudioContext;
+   if(!Audio)throw new Error('Web Audio indisponível');
+   ctx=new Audio();await ctx.resume();const src=ctx.createMediaStreamSource(stream);
+   const an=ctx.createAnalyser();an.fftSize=16384;an.smoothingTimeConstant=.52;an.minDecibels=-95;an.maxDecibels=-15;
+   src.connect(an);micStream=stream;micCtx=ctx;micAnalyser=an;
+   micSamples=new Float32Array(an.frequencyBinCount);micLastAdvance=performance.now();
+   micHistory=[];micTimer=setInterval(listenFrame,135);
+   $('toggle-listen').textContent='🎙️ Ouvindo · parar';
+   $('sheet-mic').textContent='🎙️ Ouvindo · parar';$('sheet-mic').classList.add('running');
+   micStatus('Microfone ligado. Toque o acorde atual e depois o próximo. Sem envio de áudio.');
+   toast('Escuta experimental ativada. Se não acompanhar, avance manualmente com →.');
+ }catch(e){
+   if(stream)stream.getTracks().forEach(t=>t.stop());if(ctx)ctx.close().catch(()=>{});
+   stopListen();toast('Microfone indisponível: '+(e?.message||'permissão negada'));
+ }
+}
+function findShape(ch){if(SHAPES[ch])return SHAPES[ch];const m=/^([A-G](?:#|b)?)(maj7|m7|sus4|sus2|m|7|9|4)?(?:\/([A-G](?:#|b)?))?$/.exec(ch);if(!m)return null;const p=PITCH[m[1]];if(p===undefined)return null;let quality=m[2]||'';if(quality==='4')quality='sus4';if(quality==='9')quality='7';const bases={ '':[0,2,2,1,0,0],m:[0,2,2,0,0,0],7:[0,2,0,1,0,0],m7:[0,2,0,0,0,0],sus4:[0,2,2,2,0,0],maj7:[0,2,1,1,0,0]};let basis=bases[quality]||bases[''];const offset=(p-4+12)%12;return basis.map(n=>n<0?-1:n+offset);}
+function makeDiagram(ch){const fing=findShape(ch);if(!fing)return{html:'<p>Posição não disponível neste guia.</p>',notice:'Confira a posição no Cifra Club.'};const fretted=fing.filter(n=>n>0),base=Math.max(1,Math.min(...fretted)),highest=Math.max(...fretted);const first=highest>5?base:(base>3?base:1);
+ const coords=[44,77,110,143,176,209],start=70,cell=44;let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 328" role="img" aria-label="Diagrama do acorde ${esc(ch)} com seis cordas"><text x="11" y="23" fill="#e9f4ff" font-size="15" font-weight="700">${esc(ch)}</text><text x="17" y="48" fill="#aabcce" font-size="13">${first===1?'Casas 1–5':`A partir da casa ${first}`}</text>`;
+ coords.forEach((x,j)=>{svg+=`<line x1="${x}" y1="${start}" x2="${x}" y2="${start+cell*5}" stroke="#dce7f4" stroke-width="${j===0||j===5?1.6:1}"/>`;});
+ for(let j=0;j<=5;j++)svg+=`<line x1="${coords[0]}" x2="${coords[5]}" y1="${start+j*cell}" y2="${start+j*cell}" stroke="#dce7f4" stroke-width="${j===0&&first===1?5:1.5}"/>`;
+ fing.forEach((v,j)=>{const x=coords[j];if(v===-1)svg+=`<text x="${x}" y="${start-12}" text-anchor="middle" fill="#ffb8b8" font-size="19" font-weight="850">×</text>`;else if(v===0)svg+=`<circle cx="${x}" cy="${start-21}" r="7.5" fill="none" stroke="#80e4bb" stroke-width="2.5"/>`;else{const y=start+(v-first+.5)*cell;svg+=`<circle cx="${x}" cy="${y}" r="13" fill="#80e4bb" stroke="#10372a" stroke-width="1.5"/>`;}});
+ ['E','A','D','G','B','e'].forEach((t,j)=>svg+=`<text x="${coords[j]}" y="${start+cell*5+25}" text-anchor="middle" fill="#aabcce" font-size="14">${t}</text>`);svg+='</svg>';return{html:svg,notice:'● = apertar · ○ = corda solta · × = não tocar. Da esquerda para a direita: cordas E, A, D, G, B, e.'};}
+function openDiagram(i,step){modalSong=i;modalStep=step;const seq=flatten(i),data=seq[Math.max(0,Math.min(seq.length-1,step))],info=shownChord(i,data.raw);$('diagram-title').textContent=`Como fazer ${info.shape}`;$('diagram-subtitle').textContent=`${SONGS[i].name} · tom ${songKey(i)} · ${data.sec}`;const diagram=makeDiagram(info.shape);$('diagram-svg').innerHTML=diagram.html;let note=diagram.notice;
+ if(info.capo)note+=`\n\nCapotraste na casa ${info.capo}. Essa forma soa como ${info.sounding}. O diagrama indica as posições relativas ao capotraste.`;
+ if(info.shape!==info.sounding&&!info.capo)note+='\n\nÉ uma substituição aproximada. Ouça se combina com o grupo.';
+ if(/\//.test(info.shape)&&!SHAPES[info.shape])note+='\n\nAtenção: o desenho pode não incluir o baixo da inversão.';
+ $('diagram-notes').textContent=note;$('diagram-notes').style.whiteSpace='pre-line';$('diagram-backdrop').classList.add('show');}
+function closeDiagram(){$('diagram-backdrop').classList.remove('show');}
+function cleanLyrics(text){return text.split(/\r?\n/).filter(x=>{const line=x.trim();if(!line)return true;if(/^(Tom:|Capotraste:|Afinação:|Intro:|Cifra|Ritmo:|[0-9]+\/\s*[0-9]+)/i.test(line))return false;const parts=line.split(/\s+/).filter(Boolean);if(parts.length>0&&parts.length<=12&&parts.every(t=>/^\[?([A-G](?:#|b)?)(?:maj7|m7|sus4|sus2|add9|m|7|9|4)?(?:\/[A-G](?:#|b)?)?\]?$/.test(t)))return false;return true;}).join('\n').replace(/\[([A-G](?:#|b)?)(?:maj7|m7|sus4|sus2|add9|m|7|9|4)?(?:\/[A-G](?:#|b)?)?\]/g,'').trim();}
+function openLyrics(i,sec=null){modalSong=i;modalSection=sec===null?Math.max(0,Math.min(getSections(i).length-1,i===state.song?flatten(i)[state.step].si:0)):sec;
+ $('lyrics-title').textContent=`Letra · ${SONGS[i].name}`;$('lyrics-original').href=SONGS[i].url;$('lyric-bulk').value='';$('lyric-section-select').innerHTML=getSections(i).map((p,j)=>`<option value="${j}">${esc(p.name)}</option>`).join('');loadLyricsSection();$('lyrics-backdrop').classList.add('show');}
+function loadLyricsSection(){$('lyric-section-select').value=String(modalSection);$('lyric-section-text').value=lyricText(modalSong,modalSection);$('lyric-counter').textContent=`Trecho ${modalSection+1} de ${getSections(modalSong).length}. Repetições usam o mesmo texto.`;}
+function saveLyricsSection(quiet=false){state.lyrics[modalSong][modalSection]=$('lyric-section-text').value.trim();store();renderOverview();renderStage();if(!quiet)toast('Texto do trecho salvo neste navegador.');}
+function splitLyrics(){const raw=$('lyric-bulk').value;if(!raw.trim()){toast('Cole a letra completa no campo acima.');return;}const blocks=cleanLyrics(raw).split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);if(!blocks.length){toast('Não encontrei versos para distribuir.');return;}
+ const len=getSections(modalSong).length;state.lyrics[modalSong]={};blocks.forEach((b,j)=>{if(j<len){state.lyrics[modalSong][j]=b;}else{state.lyrics[modalSong][len-1]+='\n\n'+b;}});store();loadLyricsSection();update();toast(`${blocks.length} blocos distribuídos. Confira e ajuste cada parte antes de tocar.`);}
+$('level').onchange=e=>{state.level=e.target.value;update();};$('stage-level').onchange=e=>{state.level=e.target.value;update();};
+$('show-lyrics').onchange=e=>{state.showLyrics=e.target.checked;update();};$('stage-lyrics-btn').onclick=()=>{state.showLyrics=!state.showLyrics;update();};
+$('use-capo').onchange=e=>{state.useCapo=e.target.checked;if(state.useCapo&&state.level!=='basic')state.level='basic';update();};$('modulations').onchange=e=>{state.mod=e.target.checked;update();};$('compact').onchange=e=>{state.compact=e.target.checked;update();};
+$('open-sheet').onclick=()=>openSheet(state.song);
+ $('sheet-close').onclick=closeSheet;
+ $('sheet-song').onchange=e=>{const n=Number(e.target.value);state.sheetSong=n;selectSong(n);update();$('full-sheet').scrollTop=0;};
+ $('sheet-level').onchange=e=>{state.level=e.target.value;update();};
+ $('sheet-key-down').onclick=()=>changeKey(state.sheetSong,-1);
+ $('sheet-key-up').onclick=()=>changeKey(state.sheetSong,1);
+ $('sheet-lyrics-check').onchange=e=>{state.sheetLyrics=e.target.checked;update();};
+ $('sheet-fit').onchange=e=>{state.sheetFit=e.target.checked;update();};
+ $('sheet-edit-lyrics').onclick=()=>openLyrics(state.sheetSong);
+ $('sheet-stage').onclick=()=>{const i=state.sheetSong;closeSheet();selectSong(i,state.step);openStage();};
+ $('sheet-print').onclick=()=>{document.body.classList.add('print-sheet');window.print();};$('sheet-prev').onclick=()=>move(-1);$('sheet-next-btn').onclick=()=>move(1);$('sheet-mic').onclick=toggleListen;
+ window.addEventListener('afterprint',()=>document.body.classList.remove('print-sheet'));
+ $('open-stage').onclick=openStage;$('print').onclick=()=>window.print();$('stage-close').onclick=closeStage;$('back').onclick=()=>move(-1);$('forward').onclick=()=>move(1);$('next-part').onclick=nextPart;
+$('stage-key-down').onclick=()=>changeKey(state.song,-1);$('stage-key-up').onclick=()=>changeKey(state.song,1);$('toggle-auto').onclick=toggleAuto;$('toggle-listen').onclick=toggleListen;
+$('stage-shape').onclick=()=>openDiagram(state.song,state.step);$('current-box').onclick=()=>openDiagram(state.song,state.step);
+$('diagram-close').onclick=closeDiagram;$('diagram-go').onclick=()=>{closeDiagram();selectSong(modalSong,modalStep);openStage();};$('diagram-backdrop').onclick=e=>{if(e.target===$('diagram-backdrop'))closeDiagram();};
+$('lyrics-close').onclick=()=>{saveLyricsSection(true);$('lyrics-backdrop').classList.remove('show');};$('lyric-section-select').onchange=e=>{saveLyricsSection(true);modalSection=+e.target.value;loadLyricsSection();};
+$('save-lyric-section').onclick=()=>saveLyricsSection();$('lyrics-next').onclick=()=>{saveLyricsSection(true);modalSection=(modalSection+1)%getSections(modalSong).length;loadLyricsSection();};
+$('paste-clipboard').onclick=async()=>{try{if(!navigator.clipboard?.readText)throw new Error('sem suporte');const text=await navigator.clipboard.readText();if(!text.trim()){toast('Área de transferência vazia.');return;}$('lyric-bulk').value=text;toast('Texto copiado. Clique em Distribuir por trechos.');}catch(e){$('lyric-bulk').focus();toast('Não foi possível ler automaticamente. Cole com Ctrl+V ou Cmd+V.');}};
+$('split-lyrics').onclick=splitLyrics;$('clear-lyrics').onclick=()=>{if(!confirm('Limpar todos os textos desta música?'))return;state.lyrics[modalSong]={};loadLyricsSection();update();toast('Letra apagada deste navegador.');};
+$('stage-edit-lyrics').onclick=()=>{const cur=flatten(state.song)[state.step];openLyrics(state.song,cur.si);};
+$('lyrics-backdrop').onclick=e=>{if(e.target===$('lyrics-backdrop')){$('lyrics-close').click();}};
+window.addEventListener('keydown',e=>{if($('diagram-backdrop').classList.contains('show')){if(e.key==='Escape')closeDiagram();return;}if($('lyrics-backdrop').classList.contains('show')){if(e.key==='Escape')$('lyrics-close').click();return;}if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;
+ if(state.sheet){if(e.key==='Escape'){closeSheet();e.preventDefault();return;}if(['1','2','3'].includes(e.key)){selectSong(Number(e.key)-1);state.sheetSong=state.song;update();e.preventDefault();return;}if(e.key==='ArrowRight'||e.key===' '){move(1);e.preventDefault();return;}if(e.key==='ArrowLeft'){move(-1);e.preventDefault();return;}return;}
+ let handled=true;switch(e.key){case ' ':case 'ArrowRight':move(1);break;case 'ArrowLeft':move(-1);break;case 'ArrowDown':nextPart();break;case '1':case '2':case '3':selectSong(Number(e.key)-1);break;case 'Escape':closeStage();break;case 'c':case 'C':openDiagram(state.song,state.step);break;case 'l':case 'L':state.showLyrics=!state.showLyrics;update();break;case 'f':case 'F':state.stage?closeStage():openStage();break;default:handled=false;}if(handled)e.preventDefault();});
+let touch=null;$('stage').addEventListener('touchstart',e=>{if(e.target.closest('button,select'))return;touch={x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};},{passive:true});$('stage').addEventListener('touchend',e=>{if(!touch||e.target.closest('button,select')){touch=null;return;}const x=e.changedTouches[0].clientX-touch.x,y=e.changedTouches[0].clientY-touch.y;if(Math.abs(x)>90&&Math.abs(x)>Math.abs(y)*1.4)move(x<0?1:-1);touch=null;},{passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(state.stage||state.sheet))requestWake();});window.addEventListener('resize',()=>{if(state.sheet)renderSheet();});update();openSheet(state.song);
+})();
+</script>
+</body></html>
