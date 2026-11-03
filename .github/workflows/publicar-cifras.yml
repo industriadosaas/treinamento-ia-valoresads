@@ -1,0 +1,64 @@
+name: Publicar site estático ValoresAds (incluindo cifras)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cifras/**'
+      - '.github/workflows/publicar-cifras.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Garantir Pages com build por workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://api.github.com/repos/$GITHUB_REPOSITORY/pages"
+          HTTP=$(curl -sS -o /tmp/pages_response -w '%{http_code}' \
+            -H 'Accept: application/vnd.github+json' \
+            -H "Authorization: Bearer $GH_TOKEN" "$BASE")
+          if [ "$HTTP" = "200" ]; then
+            HTTP2=$(curl -sS -o /tmp/pages_setup -w '%{http_code}' \
+              -X PUT \
+              -H 'Accept: application/vnd.github+json' \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -d '{"build_type":"workflow"}' "$BASE")
+            if [ "$HTTP2" != "204" ]; then cat /tmp/pages_setup; exit 1; fi
+          elif [ "$HTTP" = "404" ]; then
+            HTTP2=$(curl -sS -o /tmp/pages_setup -w '%{http_code}' \
+              -X POST \
+              -H 'Accept: application/vnd.github+json' \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -d '{"build_type":"workflow"}' "$BASE")
+            if [ "$HTTP2" != "201" ] && [ "$HTTP2" != "409" ]; then cat /tmp/pages_setup; exit 1; fi
+          else
+            cat /tmp/pages_response; exit 1
+          fi
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Enviar site completo sem alterar homepage
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
