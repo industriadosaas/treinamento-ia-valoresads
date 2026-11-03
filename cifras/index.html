@@ -27,6 +27,12 @@
 @page{size:A4 landscape;margin:7mm}
 @media print{body.print-sheet{background:white!important;color:black!important}body.print-sheet #overview,body.print-sheet #stage,body.print-sheet .modal-backdrop,body.print-sheet .toast{display:none!important}body.print-sheet #full-sheet{display:block!important;position:static!important;overflow:visible!important;inset:auto!important;background:white!important;color:black!important;padding:0!important}body.print-sheet .sheet-toolbar,body.print-sheet .sheet-foot,body.print-sheet .sheet-section-head button{display:none!important}body.print-sheet .sheet-heading{border-bottom:1px solid #777;color:black;padding:0 0 5px}body.print-sheet .sheet-heading h2{font-size:21px}body.print-sheet .sheet-heading p{color:#444;font-size:10px}body.print-sheet .sheet-tonality{color:black;font-size:19px}body.print-sheet .sheet-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}body.print-sheet .sheet-section{break-inside:avoid;border:1px solid #aaa;background:white!important;color:black!important;padding:5px}body.print-sheet .sheet-section-head{margin-bottom:3px}body.print-sheet .sheet-section-head strong,body.print-sheet .sheet-section-head .meta{color:black!important;font-size:11px}body.print-sheet .sheet-inline-chords{gap:4px}body.print-sheet .sheet-chord{background:white!important;color:black!important;border:1px solid #bbb;padding:3px 5px;font-size:14px;min-width:auto}body.print-sheet .sheet-chord small{font-size:8px;color:#444}body.print-sheet .sheet-lyric{color:black;background:white;font-size:10px;line-height:1.1;padding:2px;margin-top:4px}body.print-sheet .sheet-lyric-empty{display:none}body.print-sheet #full-sheet{font-family:Arial,sans-serif}}
 </style>
+<style>
+.sheet-score{display:flex;flex-direction:column;gap:8px}.sheet-line{padding:5px 2px 7px;border-bottom:1px dashed #344c61;min-width:0}.sheet-line:last-child{border-bottom:0}.sheet-line-chords{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px}.sheet-line-chords .sheet-chord{font-size:clamp(15px,1.6vw,22px);padding:4px 9px;min-width:37px}.sheet-line-lyrics{font-size:clamp(15px,1.55vw,20px);font-weight:650;line-height:1.32;color:#f1f7ff;overflow-wrap:break-word}
+#full-sheet.fit .sheet-line{padding:3px 1px 4px}#full-sheet.fit .sheet-score{gap:4px}#full-sheet.fit .sheet-line-lyrics{font-size:clamp(13px,1.25vw,17px)}#full-sheet.fit .sheet-line-chords .sheet-chord{font-size:clamp(15px,1.4vw,20px);padding:3px 7px}
+@media(max-width:630px){.sheet-line-lyrics{font-size:17px}.sheet-line-chords .sheet-chord{font-size:19px}}
+@media print{.sheet-score{gap:4px}.sheet-line{break-inside:avoid;padding:2px}.sheet-line-lyrics{font-size:12px!important;color:#111!important}.sheet-line-chords .sheet-chord{font-size:12px!important;padding:2px 4px!important}}
+</style>
 </head>
 <body>
 <main class="wrap" id="overview">
@@ -52,7 +58,7 @@
  </div></header>
  <div class="sheet-heading"><div><h2 id="sheet-title">—</h2><p id="sheet-artist">—</p></div><div class="sheet-tonality" id="sheet-key">—</div></div>
  <div class="sheet-grid" id="sheet-grid"></div>
- <footer class="sheet-foot"><span>Todos os trechos em ordem. Toque em qualquer acorde para ver os dedos. Repetições aparecem como ×2, ×3 etc. Letras adicionadas por você aparecem quando ativadas.</span><a id="sheet-source" href="#" target="_blank" rel="noopener noreferrer">Conferir cifra original ↗</a></footer>
+ <footer class="sheet-foot"><span>Todos os trechos em ordem. Toque em qualquer acorde para ver os dedos. Repetições aparecem como ×2, ×3 etc. Letras fornecidas já incluídas. Acordes estão organizados por linha como guia para o ensaio.</span><a id="sheet-source" href="#" target="_blank" rel="noopener noreferrer">Conferir cifra original ↗</a></footer>
 </section>
 <section id="stage" role="dialog" aria-modal="true" aria-label="Modo palco">
  <div class="stagebar"><div><div class="stagetitle" id="stage-song">—</div><div class="stagemeta" id="stage-meta">—</div></div><div class="stagecontrols">
@@ -73,33 +79,8 @@
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script>
 (()=>{'use strict';
-const SONGS=[
- {name:'Queremos Te Ver',artist:'Davidson Silva',key:'E',url:'https://www.cifraclub.com.br/davidson-silva/queremos-te-ver/',sections:[
- {name:'Introdução',ch:'E B/D# C#m A'},
- {name:'Estrofe',ch:'E B C#m A',repeat:3},
- {name:'Fecho da estrofe',ch:'D B E'},
- {name:'Refrão · 1',ch:'E B F#m A C#m A E',repeat:2},
- {name:'Refrão · 2',ch:'E B F#m A C#m B A E',repeat:2},
- {name:'Retorno / ponte',ch:'F#m C#m B E'}],mod:[
- {name:'Modulação para F# (opcional)',ch:'F# C# G#m B D#m C# F#',repeat:2},
- {name:'Modulação para G# (opcional)',ch:'G# D# A#m C# E#m D# G#',repeat:2}]},
- {name:'Vem Espírito',artist:'Padre Marcelo Rossi',key:'A',url:'https://www.cifraclub.com.br/padre-marcelo-rossi/vem-espirito/',sections:[
- {name:'Invocação',ch:'A D/A E/A A'},
- {name:'Sozinho eu não posso',ch:'G9 F#m7',repeat:2},
- {name:'Fecho',ch:'G9 D/E A'},
- {name:'Eu quero amar',ch:'A E/G# F#m7 C#m7'},
- {name:'Repetição',ch:'G9 F#m7',repeat:2},
- {name:'Final',ch:'G9 D/E A'}]},
- {name:'Amizade Tão Bela',artist:'Comunidade Católica Shalom',key:'D',url:'https://www.cifraclub.com.br/comunidade-catolica-shalom/amizade-tao-bela/',sections:[
- {name:'Introdução',ch:'D G Em A4'},
- {name:'Estrofe · 1',ch:'D Em G A'},
- {name:'Estrofe · 2',ch:'D Em Gm A'},
- {name:'Estrofe · 3',ch:'D Em G A'},
- {name:'Estrofe · 4',ch:'D Em Gm A'},
- {name:'Refrão · 1',ch:'G A F#m Bm G A D'},
- {name:'Refrão · 2',ch:'G A F#m Bm Em F#m Gm'},
- {name:'Final opcional',ch:'D'}]}
-];
+const SONGS=[{"name":"Queremos Te Ver","artist":"Davidson Silva","key":"E","url":"https://www.cifraclub.com.br/davidson-silva/queremos-te-ver/","sections":[{"name":"Introdução vocal","ch":"E B/D# C#m A"},{"name":"Estrofe","ch":"E B C#m A"},{"name":"Fecho da estrofe","ch":"D B E"},{"name":"Refrão · 1","ch":"E B F#m A C#m A E"},{"name":"Refrão · 2","ch":"E B F#m A C#m B A E"},{"name":"Ponte / retorno instrumental","ch":"F#m C#m B E"}],"mod":[{"name":"Modulação para F# (opcional)","ch":"F# C# G#m B D#m C# F#"},{"name":"Modulação para G# (opcional)","ch":"G# D# A#m C# E#m D# G#"}]},{"name":"Vem Espírito","artist":"Padre Marcelo Rossi","key":"A","url":"https://www.cifraclub.com.br/padre-marcelo-rossi/vem-espirito/","sections":[{"name":"Introdução (instrumental opcional)","ch":"A D/A E/A A"},{"name":"Eu quero amar · 1","ch":"A E/G# F#m7 C#m7"},{"name":"Sozinho eu não posso · 1","ch":"G9 F#m7 G9 F#m7 G9 D/E A"},{"name":"Eu quero amar · 2","ch":"A E/G# F#m7 C#m7"},{"name":"Sozinho eu não posso · 2","ch":"G9 F#m7 G9 F#m7 G9 D/E A"},{"name":"Vem Espírito · refrão 1","ch":"A D/A E/A A"},{"name":"Sozinho · refrão 1","ch":"G9 F#m7 G9 F#m7 G9 D/E A"},{"name":"Eu quero amar · 3","ch":"A E/G# F#m7 C#m7"},{"name":"Sozinho eu não posso · 3","ch":"G9 F#m7 G9 F#m7 G9 D/E A"},{"name":"Eu quero amar · 4","ch":"A E/G# F#m7 C#m7"},{"name":"Sozinho eu não posso · 4","ch":"G9 F#m7 G9 F#m7 G9 D/E A"},{"name":"Eu quero amar · 5","ch":"A E/G# F#m7 C#m7"},{"name":"Sozinho eu não posso · 5","ch":"G9 F#m7 G9 F#m7 G9 D/E A"},{"name":"Vem Espírito · refrão 2","ch":"A D/A E/A A"},{"name":"Sozinho · refrão 2","ch":"G9 F#m7 G9 F#m7 G9 D/E A"}]},{"name":"Amizade Tão Bela","artist":"Comunidade Católica Shalom","key":"D","url":"https://www.cifraclub.com.br/comunidade-catolica-shalom/amizade-tao-bela/","sections":[{"name":"Introdução (instrumental opcional)","ch":"D G Em A4"},{"name":"Estrofe · 1","ch":"D Em G A"},{"name":"Estrofe · 2","ch":"D Em Gm A"},{"name":"Estrofe · 3","ch":"D Em G A"},{"name":"Estrofe · 4","ch":"D Em Gm A"},{"name":"Refrão · 1","ch":"G A F#m Bm G A D"},{"name":"Refrão · 2","ch":"G A F#m Bm Em F#m Gm"},{"name":"Final opcional","ch":"D"}]}];
+const DEFAULT_LYRICS=[["Ohh ohh\nNara nara nara naaaa\nOhh ohh\nNara nara nara naaaa","Senhor, é bom estar, estar contigo aqui\nReunidos em Tua casa\nUm dia é mais que mil\nDiante do Teu altar","Teu amor nos transformará","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nContemplar o teu olhar","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nTransfigura-nos em Ti\nJesus","","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nContemplar o teu olhar","Jesus\nQueremos Te ver\nO teu rosto brilhará em nós\nQueremos Te ver\nTransfigura-nos em Ti\nJesus"],["","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Vem, Espírito!\nVem, Espírito!","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Eu quero amar\nEu quero ser\nAquilo que Deus quer","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver","Vem, Espírito!\nVem, Espírito!","Sozinho eu não posso mais\nSozinho eu não posso mais\nSozinho eu não posso mais viver"],["","Tua vida é um dom de alegria e festa","Cantada com esplendor, com amor e graça","O Pai contempla na glória e com um sopro te cria","Te chama a uma amizade, amizade tão bela","Tu és meu irmão, reflexo da Trindade\nShalom do Pai pra nossa vida","Tu és meu irmão, reflexo da Trindade\nShalom do Pai pra nossa vida",""]];
 const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const PITCH=Object.fromEntries(NOTES.map((x,i)=>[x,i]));Object.assign(PITCH,{Db:1,Eb:3,Gb:6,Ab:8,Bb:10,Cb:11,Fb:4,'E#':5,'B#':0});
 const EASY={'B/D#':'B7','D/A':'D','E/A':'E','G9':'G','D/E':'E7','E/G#':'E','B':'B7','C#m':'C#m7','F#m':'F#m7','Bm':'Bm7','Gm':'Gm/D','A4':'A','F#':'F#7','C#':'C#7','G#m':'G#m7','D#m':'D#m7','G#':'G#7','D#':'D#7','A#m':'A#m7','E#m':'Fm7'};
@@ -123,6 +104,18 @@ const state={...initial,...saved,transpose:Array.isArray(saved.transpose)&&saved
 if(!['original','easy','basic'].includes(state.level))state.level='easy';state.sheetSong=Math.max(0,Math.min(2,Number(state.sheetSong)||0));state.sheetLyrics=!!state.sheetLyrics;state.sheetFit=state.sheetFit!==false;state.sheet=false;
 let timer=null,wake=null,toastTimer=null,modalSong=0,modalSection=0,modalStep=0;
 let micStream=null,micCtx=null,micAnalyser=null,micSamples=null,micTimer=null,micLastAdvance=0,micCandidateSince=0,micCandidate=-1;
+function lyricText(i,si){const custom=state.lyrics[i]||{};return Object.prototype.hasOwnProperty.call(custom,si)?custom[si]:(DEFAULT_LYRICS[i]?.[si]||'');}
+function installScoreRows(){
+ if(!state.sheetLyrics)return;const list=getSections(state.sheetSong),sections=document.querySelectorAll('#sheet-grid .sheet-section');sections.forEach((article,si)=>{
+ const lyric=lyricText(state.sheetSong,si);if(!lyric)return;
+ const lines=lyric.split(/\r?\n/).map(x=>x.trim()).filter(Boolean),old=article.querySelector('.sheet-inline-chords'),oldLyrics=article.querySelector('.sheet-lyric');if(!old||!lines.length)return;
+ const chords=Array.from(old.querySelectorAll('button'));const counts=Array(lines.length).fill(0);
+ for(let j=0;j<chords.length;j++)counts[Math.min(lines.length-1,Math.floor(j*lines.length/chords.length))]++;
+ const box=document.createElement('div');box.className='sheet-score';let c=0;
+ lines.forEach((line,k)=>{const row=document.createElement('div');row.className='sheet-line';const chordsBar=document.createElement('div');chordsBar.className='sheet-line-chords';for(let m=0;m<counts[k];m++)chordsBar.appendChild(chords[c++]);const lyricEl=document.createElement('div');lyricEl.className='sheet-line-lyrics';lyricEl.textContent=line;row.appendChild(chordsBar);row.appendChild(lyricEl);box.appendChild(row);});
+ old.replaceWith(box);if(oldLyrics)oldLyrics.remove();
+ });
+}
 function store(){try{localStorage.setItem('casais-cifras-v3',JSON.stringify({level:state.level,showLyrics:state.showLyrics,useCapo:state.useCapo,mod:state.mod,compact:state.compact,transpose:state.transpose,lyrics:state.lyrics,song:state.song,step:state.step,sheetSong:state.sheetSong,sheetLyrics:state.sheetLyrics,sheetFit:state.sheetFit}));}catch(e){}}
 function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function noteShift(n,by){return NOTES[((n+by)%12+12)%12];}
@@ -144,10 +137,10 @@ function renderOverview(){syncControls();let html='';SONGS.forEach((song,i)=>{co
  html+=`<article class="song ${state.song===i?'active':''}"><div class="songhead"><div><h2>${esc(song.name)}</h2><div class="artist">${esc(song.artist)}</div></div><div class="keybox">Tom<strong>${esc(key)}</strong></div></div>`;
  html+=`<div class="transpose"><button class="btn" data-tune="${i}" data-diff="-1" title="Descer semitom">−</button><select aria-label="Tom de ${esc(song.name)}" data-key="${i}">${NOTES.map(n=>`<option ${key===n?'selected':''} value="${n}">${n}</option>`).join('')}</select><button class="btn" data-tune="${i}" data-diff="1" title="Subir semitom">+</button><button class="btn tiny flat" data-reset="${i}" title="Voltar ao tom escolhido inicialmente">↺</button></div>`;
  html+=`<div class="tip">${capo.fret?`Capotraste casa ${capo.fret} · toque as formas relativas a <b>${capo.shape}</b> · tom soando ${key}`:`${state.level==='original'?'Versão original do guia':state.level==='easy'?'Simplificações de acordes · tom preservado':'Acordes básicos · tom preservado'}`} </div>`;
- html+=`<div class="songactions"><button class="btn primary" data-play="${i}">▶ Tocar</button><button class="btn" data-sheet-open="${i}">▤ Música completa</button><button class="btn" data-add-lyrics="${i}">✎ Colar letra</button><a class="btn flat" target="_blank" rel="noopener noreferrer" href="${song.url}">Ver Cifra Club ↗</a></div>`;
+ html+=`<div class="songactions"><button class="btn primary" data-play="${i}">▶ Tocar</button><button class="btn" data-sheet-open="${i}">▤ Música completa</button><button class="btn" data-add-lyrics="${i}">✎ Editar letra</button><a class="btn flat" target="_blank" rel="noopener noreferrer" href="${song.url}">Ver Cifra Club ↗</a></div>`;
  list.forEach((sec,si)=>{const chords=sec.ch.trim().split(/\s+/),first=offset;offset+=chords.length*(sec.repeat||1);const active=state.song===i&&item&&item.si===si;html+=`<div class="section ${active?'active':''}"><div class="sectionhead"><span class="sectionname">${esc(sec.name)}</span>${sec.repeat>1?`<span class="repeat">×${sec.repeat}</span>`:''}</div><div class="chords">`;
  chords.forEach((raw,ci)=>{const display=shownChord(i,raw),now=active&&item.ci===ci;html+=`<button class="chord ${now?'current':''}" data-chord-song="${i}" data-chord-step="${first+ci}" title="Ver como fazer ${esc(display.shape)}">${esc(display.shape)}${display.capo?`<small>soa ${esc(display.sounding)}</small>`:''}</button>`;});html+='</div>';
- if(state.showLyrics){const lyric=state.lyrics[i]&&state.lyrics[i][si];if(lyric)html+=`<div class="section-lyrics">${esc(lyric)}</div>`;else html+=`<div class="note">Letra não adicionada</div>`;}
+ if(state.showLyrics){const lyric=lyricText(i,si);if(lyric)html+=`<div class="section-lyrics">${esc(lyric)}</div>`;else html+=`<div class="note">Letra não adicionada</div>`;}
  if(sec.note)html+=`<div class="note">${esc(sec.note)}</div>`;html+='</div>';
  });html+='</article>';
  });$('songs').innerHTML=html;document.body.classList.toggle('compact',state.compact);
@@ -169,7 +162,7 @@ function renderStage(){clampStep();syncControls();const i=state.song,s=SONGS[i],
  $('next-section').textContent=next?next.sec:'Fim da música';
  $('upcoming').innerHTML=seq.slice(state.step+2,state.step+6).map(p=>`<span class="pill">${esc(shownChord(i,p.raw).shape)}</span>`).join('');
  $('stage-lyrics').classList.toggle('hidden',!state.showLyrics);$('lyrics-section').textContent='LETRA · '+cur.sec;
- const lyric=state.lyrics[i]&&state.lyrics[i][cur.si];$('lyrics-body').textContent=lyric||'Ainda não há letra neste trecho. Toque em “Editar letra” para adicioná-la.';
+ const lyric=lyricText(i,cur.si);$('lyrics-body').textContent=lyric||'Ainda não há letra neste trecho. Toque em “Editar letra” para adicioná-la.';
  $('lyrics-body').classList.toggle('lyrics-empty',!lyric);
  $('toggle-auto').textContent=state.auto?`Auto: ${state.seconds}s`:'Auto: não';
 }
@@ -181,10 +174,10 @@ function renderSheet(){
    const start=pos,chords=sec.ch.trim().split(/\s+/);pos+=chords.length*(sec.repeat||1);
    const current=state.song===i&&flatten(i)[state.step]?.si===si;
    const buttons=chords.map((raw,j)=>{const c=shownChord(i,raw);return `<button class="sheet-chord" data-sheet-chord="${start+j}" title="Ver posição de ${esc(c.shape)}">${esc(c.shape)}${c.capo?`<small>soa ${esc(c.sounding)}</small>`:''}</button>`;}).join('');
-   const lyric=state.lyrics[i]?.[si]||'';
+   const lyric=lyricText(i,si);
    return `<article class="sheet-section ${current?'active':''}"><div class="sheet-section-head"><strong>${String(si+1).padStart(2,'0')} · ${esc(sec.name)}</strong><span class="meta">${sec.repeat>1?`Repetir ×${sec.repeat}`:''}</span><button class="btn tiny" data-sheet-start="${start}" title="Iniciar modo palco neste trecho">▶</button></div><div class="sheet-inline-chords">${buttons}</div>${state.sheetLyrics?(lyric?`<div class="sheet-lyric">${esc(lyric)}</div>`:'<div class="sheet-lyric-empty">Letra ainda não adicionada neste trecho</div>'):''}</article>`;
  }).join('');
- $('sheet-grid').innerHTML=html;
+ $('sheet-grid').innerHTML=html;installScoreRows();
  document.querySelectorAll('[data-sheet-chord]').forEach(e=>e.onclick=()=>openDiagram(i,+e.dataset.sheetChord));
  document.querySelectorAll('[data-sheet-start]').forEach(e=>e.onclick=()=>{const step=+e.dataset.sheetStart;closeSheet();selectSong(i,step);openStage();});
 }
@@ -231,7 +224,7 @@ function closeDiagram(){$('diagram-backdrop').classList.remove('show');}
 function cleanLyrics(text){return text.split(/\r?\n/).filter(x=>{const line=x.trim();if(!line)return true;if(/^(Tom:|Capotraste:|Afinação:|Intro:|Cifra|Ritmo:|[0-9]+\/\s*[0-9]+)/i.test(line))return false;const parts=line.split(/\s+/).filter(Boolean);if(parts.length>0&&parts.length<=12&&parts.every(t=>/^\[?([A-G](?:#|b)?)(?:maj7|m7|sus4|sus2|add9|m|7|9|4)?(?:\/[A-G](?:#|b)?)?\]?$/.test(t)))return false;return true;}).join('\n').replace(/\[([A-G](?:#|b)?)(?:maj7|m7|sus4|sus2|add9|m|7|9|4)?(?:\/[A-G](?:#|b)?)?\]/g,'').trim();}
 function openLyrics(i,sec=null){modalSong=i;modalSection=sec===null?Math.max(0,Math.min(getSections(i).length-1,i===state.song?flatten(i)[state.step].si:0)):sec;
  $('lyrics-title').textContent=`Letra · ${SONGS[i].name}`;$('lyric-bulk').value='';$('lyric-section-select').innerHTML=getSections(i).map((p,j)=>`<option value="${j}">${esc(p.name)}</option>`).join('');loadLyricsSection();$('lyrics-backdrop').classList.add('show');}
-function loadLyricsSection(){$('lyric-section-select').value=String(modalSection);$('lyric-section-text').value=state.lyrics[modalSong][modalSection]||'';$('lyric-counter').textContent=`Trecho ${modalSection+1} de ${getSections(modalSong).length}. Repetições usam o mesmo texto.`;}
+function loadLyricsSection(){$('lyric-section-select').value=String(modalSection);$('lyric-section-text').value=lyricText(modalSong,modalSection);$('lyric-counter').textContent=`Trecho ${modalSection+1} de ${getSections(modalSong).length}. Repetições usam o mesmo texto.`;}
 function saveLyricsSection(quiet=false){state.lyrics[modalSong][modalSection]=$('lyric-section-text').value.trim();store();renderOverview();renderStage();if(!quiet)toast('Texto do trecho salvo neste navegador.');}
 function splitLyrics(){const raw=$('lyric-bulk').value;if(!raw.trim()){toast('Cole a letra completa no campo acima.');return;}const blocks=cleanLyrics(raw).split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);if(!blocks.length){toast('Não encontrei versos para distribuir.');return;}
  const len=getSections(modalSong).length;blocks.forEach((b,j)=>{if(j<len){state.lyrics[modalSong][j]=b;}else{state.lyrics[modalSong][len-1]+='\n\n'+b;}});store();loadLyricsSection();update();toast(`${blocks.length} blocos distribuídos. Confira e ajuste cada parte antes de tocar.`);}
